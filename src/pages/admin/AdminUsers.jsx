@@ -1,0 +1,192 @@
+import { useMemo, useState } from 'react';
+import { useStore } from '../../lib/store.jsx';
+import { adminCreateUser, adminDeleteUser, adminUpdateUser } from '../../lib/banking.js';
+import { formatDate } from '../../lib/format.js';
+import { Field, Modal, UserStatusBadge, Badge, Alert } from '../../components/ui.jsx';
+
+const EMPTY = {
+  name: '',
+  email: '',
+  username: '',
+  accountNumber: '',
+  countryCode: '41',
+  phone: '',
+  branchId: 1,
+  status: 1,
+  password: '',
+  emailVerified: true,
+};
+
+export default function AdminUsers() {
+  const { state, apply } = useStore();
+  const [filter, setFilter] = useState('all');
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState(EMPTY);
+  const [errors, setErrors] = useState([]);
+
+  const customers = useMemo(
+    () =>
+      state.users
+        .filter((u) => u.userType === 'customer')
+        .filter((u) => (filter === 'all' ? true : filter === 'active' ? Number(u.status) === 1 : Number(u.status) === 0))
+        .sort((a, b) => b.id - a.id),
+    [state.users, filter],
+  );
+
+  const branchFor = (id) => state.branches.find((b) => b.id === id)?.name || '—';
+
+  const open = (u) => {
+    setEditing(u || {});
+    setForm(
+      u
+        ? {
+            name: u.name,
+            email: u.email,
+            username: u.username,
+            accountNumber: u.accountNumber,
+            countryCode: u.countryCode,
+            phone: u.phone,
+            branchId: u.branchId,
+            status: u.status,
+            password: '',
+            emailVerified: Boolean(u.emailVerifiedAt),
+          }
+        : EMPTY,
+    );
+    setErrors([]);
+  };
+
+  const save = (e) => {
+    e.preventDefault();
+    const result = editing?.id
+      ? adminUpdateUser(state, editing.id, form)
+      : adminCreateUser(state, form);
+    if (!result.ok) {
+      setErrors(result.errors);
+      return;
+    }
+    apply(result);
+    setEditing(null);
+  };
+
+  const remove = (u) => {
+    if (!window.confirm(`Delete user ${u.name}? Their ledger rows are removed too.`)) return;
+    apply(adminDeleteUser(state, u.id));
+  };
+
+  return (
+    <>
+      <div className="page-title-row">
+        <h1>Users</h1>
+        <button className="btn btn-sm" onClick={() => open(null)}>Add customer</button>
+      </div>
+
+      <div className="flex flex-wrap gap-8 mg-bottom-24">
+        {[['all', 'All'], ['active', 'Active'], ['inactive', 'Inactive']].map(([k, label]) => (
+          <button key={k} className={`btn btn-sm ${filter === k ? '' : 'btn-ghost'}`} onClick={() => setFilter(k)}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="table-wrap">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Account</th>
+              <th>Phone</th>
+              <th>Branch</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th className="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customers.map((u) => (
+              <tr key={u.id}>
+                <td className="mono">#{u.id}</td>
+                <td className="text-bold">{u.name}</td>
+                <td>{u.email}</td>
+                <td className="mono">{u.accountNumber}</td>
+                <td>+{u.countryCode} {u.phone}</td>
+                <td>{branchFor(u.branchId)}</td>
+                <td><UserStatusBadge status={u.status} /></td>
+                <td className="nowrap">{formatDate(u.createdAt, state.settings)}</td>
+                <td className="text-right nowrap">
+                  <button className="btn btn-ghost btn-sm" onClick={() => open(u)}>Edit</button>{' '}
+                  <button className="btn btn-danger-soft btn-sm" onClick={() => remove(u)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="field-hint mg-top-16">
+        Ported from the PHP admin UserController: name/email/username/account-number uniqueness, required
+        branch & status, password min 6. KYC document verification is stubbed (no uploads on a static host).
+      </p>
+
+      {editing && (
+        <Modal title={editing.id ? `Edit user #${editing.id}` : 'Add customer'} onClose={() => setEditing(null)} wide>
+          {errors.length > 0 && <Alert type="error">{errors.join(' ')}</Alert>}
+          <form onSubmit={save} noValidate>
+            <div className="form-grid">
+              <Field label="Name" required>
+                <input className="input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} maxLength={255} />
+              </Field>
+              <Field label="Username" required>
+                <input className="input" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
+              </Field>
+            </div>
+            <div className="form-grid">
+              <Field label="Email" required>
+                <input className="input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              </Field>
+              <Field label="Account number" required hint="Unique, max 30 characters (PHP rule).">
+                <input className="input mono" value={form.accountNumber} onChange={(e) => setForm({ ...form, accountNumber: e.target.value })} />
+              </Field>
+            </div>
+            <div className="form-grid">
+              <Field label="Country code">
+                <input className="input" value={form.countryCode} onChange={(e) => setForm({ ...form, countryCode: e.target.value })} />
+              </Field>
+              <Field label="Phone">
+                <input className="input" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              </Field>
+            </div>
+            <div className="form-grid">
+              <Field label="Branch" required>
+                <select className="select" value={form.branchId} onChange={(e) => setForm({ ...form, branchId: Number(e.target.value) })}>
+                  {state.branches.map((b) => (
+                    <option key={b.id} value={b.id}>{b.name}</option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Status" required>
+                <select className="select" value={form.status} onChange={(e) => setForm({ ...form, status: Number(e.target.value) })}>
+                  <option value={1}>Active</option>
+                  <option value={0}>Inactive</option>
+                </select>
+              </Field>
+            </div>
+            <div className="form-grid">
+              <Field label={editing?.id ? 'Password (leave blank to keep)' : 'Password'} required={!editing?.id}>
+                <input className="input" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+              </Field>
+              <Field label="Email verified">
+                <select className="select" value={form.emailVerified ? 1 : 0} onChange={(e) => setForm({ ...form, emailVerified: Number(e.target.value) === 1 })}>
+                  <option value={1}>Yes</option>
+                  <option value={0}>No</option>
+                </select>
+              </Field>
+            </div>
+            <button className="btn btn-block" type="submit">{editing?.id ? 'Save changes' : 'Create customer'}</button>
+          </form>
+        </Modal>
+      )}
+    </>
+  );
+}
