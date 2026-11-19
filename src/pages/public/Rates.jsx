@@ -10,9 +10,9 @@ const ACCOUNT_TYPES = [
 ];
 
 const LOAN_TYPES = [
-  ['Personal loan', 'from 4.9% p.a.', 'up to GBP 50,000 (fictional)', '1–5 years'],
-  ['Home loan', 'from 2.9% p.a.', 'up to GBP 1,000,000 (fictional)', '5–15 years'],
-  ['Business loan', 'from 5.4% p.a.', 'up to GBP 250,000 (fictional)', '1–7 years'],
+  ['Personal loan', 'from 4.9% p.a.', 'up to GBP 50,000', '1–5 years'],
+  ['Home loan', 'from 2.9% p.a.', 'up to GBP 1,000,000', '5–15 years'],
+  ['Business loan', 'from 5.4% p.a.', 'up to GBP 250,000', '1–7 years'],
 ];
 
 export default function Rates() {
@@ -26,7 +26,7 @@ export default function Rates() {
         <div className="container">
           <div className="sufix-line" />
           <h1>Rates</h1>
-          <p>Fictional, fixed rates. They never move — no market data feeds are involved.</p>
+          <p>Fixed rates. They never move — no market data feeds are involved.</p>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-// Seed data — 100% fictional data.
+// Seed data — 100% sample data.
 // No real people, credentials, account numbers or card numbers.
 // Passwords are plain text on purpose: this is a client-side app and the
 // README explains that a real backend must hash them server-side.
@@ -187,7 +187,7 @@ export function buildSeed() {
   const ticketMessages = [
     { id: 1, supportTicketId: 1, message: 'My debit card shows as blocked while I am abroad. This is a message to test the ticket flow.', senderId: 2, createdAt: daysAgo(2) },
     { id: 2, supportTicketId: 2, message: 'How can I export the last three months of my statement?', senderId: 3, createdAt: daysAgo(14) },
-    { id: 3, supportTicketId: 2, message: 'Reply: open Statements, pick a date range and use Print / CSV. Everything is fictional data.', senderId: 1, createdAt: daysAgo(13) },
+    { id: 3, supportTicketId: 2, message: 'Reply: open Statements, pick a date range and use Print / CSV. Everything is sample data.', senderId: 1, createdAt: daysAgo(13) },
     { id: 4, supportTicketId: 2, message: 'Got it, thank you!', senderId: 3, createdAt: daysAgo(12) },
   ];
 
@@ -195,7 +195,7 @@ export function buildSeed() {
     {
       id: 1,
       title: 'Welcome to Steinberg Swiss Finance',
-      body: 'Everything in this app is fictional: the bank, the people, the accounts and the cards are all fictional data. There is no real money anywhere in this application.',
+      body: 'Everything in this app is a sample: the bank, the people, the accounts and the cards are all sample data. There is no real money anywhere in this application.',
       status: 1,
       createdAt: daysAgo(30),
       updatedAt: daysAgo(30),
@@ -212,10 +212,10 @@ export function buildSeed() {
 
   const settings = {
     site_title: 'Steinberg Swiss Finance',
-    company_name: 'Steinberg Swiss Finance AG (fictional)',
+    company_name: 'Steinberg Swiss Finance AG',
     email: 'support@steinberg.example',
     phone: '+41 00 000 00 00',
-    address: '1 Alpenstrasse, 8000 Zürich — fictional address',
+    address: '1 Alpenstrasse, 8000 Zürich',
     currency_position: 'left',
     date_format: 'd M Y',
     time_format: 'H:i',

@@ -111,20 +111,6 @@ export function PublicFooter() {
           <a href="https://webflow.com/" target="_blank" rel="noreferrer">Webflow</a>
         </div>
       </div>
-      <div style={{ background: '#f20823', color: '#fff', padding: '14px 0' }}>
-        <div className="container flex items-center justify-between" style={{ flexWrap: 'wrap', gap: 10 }}>
-          <div style={{ fontWeight: 700 }}>Like the Steinberg Swiss Finance Webflow Template? Get it today on the Webflow Marketplace</div>
-          <a
-            className="btn btn-sm"
-            style={{ background: '#fff', color: '#f20823', borderColor: '#fff' }}
-            href="https://webflow.com/templates/html/banca-bank-website-template"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Buy Now
-          </a>
-        </div>
-      </div>
     </footer>
   );
 }

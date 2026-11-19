@@ -91,7 +91,6 @@ export default function Statements() {
         <p className="field-hint mg-0">
           {currentUser.name} · {currentUser.accountNumber} · {date1} to {date2} · {rows.length} entries ·
           opening balance {formatMoney(opening, Number(state.settings.base_currency || 1), state.currencies, state.settings)}.
-          All figures are fictional.
         </p>
       </div>
 

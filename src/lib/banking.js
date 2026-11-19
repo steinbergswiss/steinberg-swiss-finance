@@ -515,7 +515,7 @@ export function adminDeleteTicket(state, ticketId) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Beneficiaries (extension — fictional payees only)                  */
+/* Beneficiaries (saved payees)                                        */
 /* ------------------------------------------------------------------ */
 export function validateBeneficiary(state, userId, form, ignoreId = null) {
   const errors = [];
@@ -560,7 +560,7 @@ export function deleteBeneficiary(state, userId, id) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Cards (extension — fake PANs only, masked everywhere)              */
+/* Cards (PANs masked everywhere)                                      */
 /* ------------------------------------------------------------------ */
 export function toggleCardFreeze(state, userId, cardId) {
   const next = clone(state);

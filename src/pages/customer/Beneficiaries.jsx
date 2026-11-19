@@ -47,7 +47,7 @@ export default function Beneficiaries() {
 
       <p className="mg-bottom-24">
         Saved payees for the transfer form. The PHP script has no beneficiary table — this screen is a
-        showcase extension; the entries are fictional and local only.
+        showcase extension; the entries are local only.
       </p>
 
       {mine.length === 0 ? (
@@ -94,7 +94,7 @@ export default function Beneficiaries() {
             <Field label="Account number" required>
               <input className="input mono" value={form.accountNumber} onChange={(e) => setForm({ ...form, accountNumber: e.target.value })} />
             </Field>
-            <Field label="Bank" required hint="Use a fictional bank name, e.g. Helvetia Credit Bank.">
+            <Field label="Bank" required hint="Use a bank name, e.g. Helvetia Credit Bank.">
               <input className="input" value={form.bank} onChange={(e) => setForm({ ...form, bank: e.target.value })} />
             </Field>
             <Field label="Nickname">

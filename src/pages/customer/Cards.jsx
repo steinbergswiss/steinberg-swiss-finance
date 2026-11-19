@@ -15,12 +15,12 @@ export default function Cards() {
     <>
       <div className="page-title-row">
         <h1>Cards</h1>
-        <span className="badge badge-neutral">Masked fake PANs</span>
+        <span className="badge badge-neutral">Masked PANs</span>
       </div>
 
       <p className="mg-bottom-24">
-        The PHP dashboard shows cards with masked numbers (•••• •••• ••••). The fake PANs below use the
-        fictional "4000…" range and belong to no payment network.
+        The PHP dashboard shows cards with masked numbers (•••• •••• ••••). The PANs below use the
+        "4000…" range and belong to no payment network.
       </p>
 
       {mine.length === 0 ? (
@@ -43,7 +43,7 @@ export default function Cards() {
               </div>
               <div className="flex gap-8 mg-top-16">
                 <button className="btn btn-secondary btn-sm" onClick={() => setRevealed({ ...revealed, [c.id]: !revealed[c.id] })}>
-                  {revealed[c.id] ? 'Hide PAN' : 'Reveal fake PAN'}
+                  {revealed[c.id] ? 'Hide PAN' : 'Reveal PAN'}
                 </button>
                 <button className="btn btn-secondary btn-sm" onClick={() => toggle(c.id)}>
                   {c.status === 'frozen' ? 'Unfreeze' : 'Freeze'}

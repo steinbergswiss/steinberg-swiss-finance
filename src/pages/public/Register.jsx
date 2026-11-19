@@ -90,7 +90,7 @@ export default function Register() {
             <label className="checkbox-row mg-bottom-16">
               <input type="checkbox" checked={form.agree} onChange={set('agree')} />
               <span>
-                I agree with the fictional <span className="text-bold">privacy policy</span> and{' '}
+                I agree with the <span className="text-bold">privacy policy</span> and{' '}
                 <span className="text-bold">terms of use</span>. This is a showcase — no real agreement is formed.
               </span>
             </label>
