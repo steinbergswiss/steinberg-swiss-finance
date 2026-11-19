@@ -107,8 +107,7 @@ export function PublicFooter() {
       </div>
       <div className="footer-fine">
         <div className="container">
-          © Copyright Steinberg Swiss Finance | Designed by <a href="https://brixtemplates.com/" target="_blank" rel="noreferrer">BRIX Templates</a> - Powered by{' '}
-          <a href="https://webflow.com/" target="_blank" rel="noreferrer">Webflow</a>
+          © Copyright Steinberg Swiss Finance
         </div>
       </div>
     </footer>
