@@ -15,6 +15,7 @@ import Accounts from './pages/customer/Accounts.jsx';
 import Transactions from './pages/customer/Transactions.jsx';
 import TransactionDetail from './pages/customer/TransactionDetail.jsx';
 import Transfer from './pages/customer/Transfer.jsx';
+import Deposit from './pages/customer/Deposit.jsx';
 import Beneficiaries from './pages/customer/Beneficiaries.jsx';
 import Cards from './pages/customer/Cards.jsx';
 import Statements from './pages/customer/Statements.jsx';
@@ -26,6 +27,7 @@ import TicketDetail from './pages/customer/TicketDetail.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import AdminUsers from './pages/admin/AdminUsers.jsx';
 import AdminAccounts from './pages/admin/AdminAccounts.jsx';
+import AdminDeposits from './pages/admin/AdminDeposits.jsx';
 import AdminTransactions from './pages/admin/AdminTransactions.jsx';
 import AdminPendingTransfers from './pages/admin/AdminPendingTransfers.jsx';
 import AdminNotices from './pages/admin/AdminNotices.jsx';
@@ -51,6 +53,7 @@ export default function App() {
           <Route path="transactions" element={<Transactions />} />
           <Route path="transactions/:id" element={<TransactionDetail />} />
           <Route path="transfer" element={<Transfer />} />
+          <Route path="deposit" element={<Deposit />} />
           <Route path="beneficiaries" element={<Beneficiaries />} />
           <Route path="cards" element={<Cards />} />
           <Route path="statements" element={<Statements />} />
@@ -66,6 +69,7 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="accounts" element={<AdminAccounts />} />
+          <Route path="deposits" element={<AdminDeposits />} />
           <Route path="transactions" element={<AdminTransactions />} />
           <Route path="pending-transfers" element={<AdminPendingTransfers />} />
           <Route path="notices" element={<AdminNotices />} />

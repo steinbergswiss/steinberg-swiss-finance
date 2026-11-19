@@ -620,6 +620,80 @@ export function updateSettings(state, patch) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Bitcoin deposit requests (settings.btc_address is admin-editable)   */
+/* ------------------------------------------------------------------ */
+export function bitcoinDeposits(state) {
+  return state.transactions
+    .filter((t) => t.type === 'Deposit' && t.method === 'Bitcoin' && t.drCr === 'cr')
+    .sort((a, b) => b.id - a.id);
+}
+
+export function submitBitcoinDeposit(state, { userId, amount, txHash, note }) {
+  const errors = [];
+  if (String(amount || '').trim() === '' || Number.isNaN(Number(amount))) {
+    errors.push('The amount field is required.');
+  } else if (Number(amount) < 1) {
+    errors.push('The amount must be at least 1.00.');
+  }
+  if (!String(txHash || '').trim()) errors.push('The transaction ID field is required.');
+  if (errors.length) return { ok: false, errors, state };
+
+  const next = clone(state);
+  const id = next.counter.transaction++;
+  const ts = nowIso();
+  const base = Number(getSetting(next.settings, 'base_currency', '1'));
+  next.transactions.push({
+    id,
+    userId,
+    currencyId: base,
+    amount: round2(Number(amount)),
+    fee: 0,
+    drCr: 'cr',
+    type: 'Deposit',
+    method: 'Bitcoin',
+    status: STATUS.pending,
+    note: String(note || '').trim() || 'Bitcoin deposit',
+    parentId: null,
+    bank: null,
+    createdUserId: userId,
+    branchId: 1,
+    transactionDetails: { txHash: String(txHash).trim() },
+    createdAt: ts,
+    updatedAt: ts,
+  });
+  return {
+    ok: true,
+    state: next,
+    message: 'Deposit request submitted. It will be credited to your account once approved.',
+    depositId: id,
+  };
+}
+
+export function approveDeposit(state, id) {
+  const next = clone(state);
+  const t = next.transactions.find((x) => x.id === Number(id));
+  if (!t) return { ok: false, message: 'Deposit not found.', state };
+  t.status = STATUS.completed;
+  t.updatedAt = nowIso();
+  return { ok: true, state: next, message: 'Deposit Approved' };
+}
+
+export function rejectDeposit(state, id) {
+  const next = clone(state);
+  const t = next.transactions.find((x) => x.id === Number(id));
+  if (!t) return { ok: false, message: 'Deposit not found.', state };
+  t.status = STATUS.rejected;
+  t.updatedAt = nowIso();
+  return { ok: true, state: next, message: 'Deposit Rejected' };
+}
+
+export function deleteDeposit(state, id) {
+  const next = clone(state);
+  next.transactions = next.transactions.filter((t) => t.id !== Number(id));
+  return { ok: true, state: next, message: 'Deleted Successfully' };
+}
+
+/* ------------------------------------------------------------------ */
 /* Contact form (PHP WebsiteController@send_message)                   */
 /* Stored locally only — no email leaves the browser.                  */
 /* ------------------------------------------------------------------ */

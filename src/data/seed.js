@@ -5,7 +5,7 @@
 
 import { daysAgo } from '../lib/format.js';
 
-export const SEED_VERSION = 2;
+export const SEED_VERSION = 3;
 
 export function buildSeed() {
   const users = [
@@ -142,6 +142,7 @@ export function buildSeed() {
     T(22, 2, 2, 60, 0, 'cr', 'Transfer', 2, 'Birthday gift', 5, 21),
     T(23, 5, 3, 130, 0, 'dr', 'Payment', 2, 'Online course', 4),
     T(24, 4, 3, 200, 0, 'dr', 'Withdraw', 2, 'Travel cash', 2, null, 'Manual'),
+    T(25, 2, 1, 750, 0, 'cr', 'Deposit', 1, 'Bitcoin deposit', 0, null, 'Bitcoin', null, { txHash: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2' }),
   ];
 
   const beneficiaries = [
@@ -216,6 +217,7 @@ export function buildSeed() {
     email: 'support@steinberg.example',
     phone: '+41 00 000 00 00',
     address: '1 Alpenstrasse, 8000 Zürich',
+    btc_address: 'bc1qsteinbergswissfinanceexampleaddress000',
     currency_position: 'left',
     date_format: 'd M Y',
     time_format: 'H:i',
@@ -250,7 +252,7 @@ export function buildSeed() {
     settings,
     counter: {
       user: 6,
-      transaction: 25,
+      transaction: 26,
       ticket: 3,
       ticketMessage: 5,
       beneficiary: 5,

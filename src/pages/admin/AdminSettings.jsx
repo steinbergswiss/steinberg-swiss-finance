@@ -53,6 +53,9 @@ export default function AdminSettings() {
             <Field label="Address">
               <input className="input" value={form.address} onChange={set('address')} />
             </Field>
+            <Field label="Bitcoin deposit address" hint="Shown to customers on the Deposit page. Changes take effect immediately.">
+              <input className="input mono" value={form.btc_address || ''} onChange={set('btc_address')} />
+            </Field>
             <div className="form-grid">
               <Field label="Currency position">
                 <select className="select" value={form.currency_position} onChange={set('currency_position')}>
