@@ -244,17 +244,23 @@ export function validateRegistration(state, { name, email, countryCode, phone, p
   return errors;
 }
 
+// Random 10-digit account number (no spaces), unique among users.
+export function randomAccountNumber(state) {
+  const used = new Set((state.users || []).map((u) => String(u.accountNumber || '')));
+  let n;
+  do {
+    n = String(Math.floor(1000000000 + Math.random() * 9000000000));
+  } while (used.has(n));
+  return n;
+}
+
 export function registerCustomer(state, form) {
   const errors = validateRegistration(state, form);
   if (errors.length) return { ok: false, errors, state };
   const next = clone(state);
 
-  // PHP: next_account_number() from settings, then increment
-  let accountNumber = String(getSetting(next.settings, 'next_account_number', '9000 0006')).trim();
-  next.settings.next_account_number = String(Number(accountNumber.replace(/\s/g, '')) + 1).replace(
-    /(\d{4})(?=\d)/g,
-    '$1 ',
-  );
+  // Random 10-digit account number, no spacing
+  const accountNumber = randomAccountNumber(next);
 
   const id = next.counter.user++;
   const ts = nowIso();
@@ -348,7 +354,7 @@ export function adminCreateUser(state, form) {
     name: String(form.name).trim(),
     email: String(form.email).trim(),
     username: String(form.username).trim(),
-    accountNumber: String(form.accountNumber).trim(),
+    accountNumber: form.accountNumber ? String(form.accountNumber).trim() : randomAccountNumber(next),
     countryCode: String(form.countryCode || '').trim(),
     phone: String(form.phone || '').trim(),
     password: String(form.password),

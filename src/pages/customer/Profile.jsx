@@ -99,7 +99,6 @@ export default function Profile() {
                 ['Phone', `+${currentUser.countryCode} ${currentUser.phone}`],
                 ['Account number', currentUser.accountNumber],
                 ['Branch', branch ? branch.name : '—'],
-                ['Member since', formatDate(currentUser.createdAt, state.settings)],
                 ['Email verified', currentUser.emailVerifiedAt ? formatDate(currentUser.emailVerifiedAt, state.settings) : 'No'],
               ]}
             />

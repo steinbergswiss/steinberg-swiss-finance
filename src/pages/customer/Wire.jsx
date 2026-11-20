@@ -92,7 +92,7 @@ export default function Wire() {
               <Field label="Beneficiary account number" required>
                 <input className="input mono" value={form.accountNumber} onChange={set('accountNumber')} />
               </Field>
-              <Field label="Beneficiary account holder" required>
+              <Field label="Beneficiary account name" required>
                 <input className="input" value={form.accountHolderName} onChange={set('accountHolderName')} />
               </Field>
             </div>
