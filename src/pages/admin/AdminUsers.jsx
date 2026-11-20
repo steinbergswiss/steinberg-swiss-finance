@@ -4,6 +4,7 @@ import { adminCreateUser, adminDeleteUser, adminUpdateUser } from '../../lib/ban
 import { formatDate } from '../../lib/format.js';
 import { compressAndUploadImage } from '../../lib/uploadImage.js';
 import { Field, Modal, UserStatusBadge, Badge, Alert } from '../../components/ui.jsx';
+import CountrySelect from '../../components/CountrySelect.jsx';
 
 const EMPTY = {
   name: '',
@@ -193,7 +194,7 @@ export default function AdminUsers() {
             </div>
             <div className="form-grid">
               <Field label="Country code">
-                <input className="input" value={form.countryCode} onChange={(e) => setForm({ ...form, countryCode: e.target.value })} />
+                <CountrySelect value={`+${form.countryCode}`} onChange={(d) => setForm({ ...form, countryCode: d.replace("+", "") })} />
               </Field>
               <Field label="Phone">
                 <input className="input" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />

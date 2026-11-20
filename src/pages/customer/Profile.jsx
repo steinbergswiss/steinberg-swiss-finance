@@ -4,6 +4,7 @@ import { changePassword, updateProfile, updateProfilePicture } from '../../lib/b
 import { compressAndUploadImage } from '../../lib/uploadImage.js';
 import { formatDate } from '../../lib/format.js';
 import { Field, Alert, KeyValue, Badge } from '../../components/ui.jsx';
+import CountrySelect from '../../components/CountrySelect.jsx';
 
 export default function Profile() {
   const { state, currentUser, apply } = useStore();
@@ -109,7 +110,7 @@ export default function Profile() {
               </Field>
               <div className="form-grid">
                 <Field label="Country code" required>
-                  <input className="input" value={form.countryCode} onChange={set('countryCode')} />
+                  <CountrySelect value={`+${form.countryCode}`} onChange={(d) => setForm({ ...form, countryCode: d.replace("+", "") })} />
                 </Field>
                 <Field label="Phone" required>
                   <input className="input" value={form.phone} onChange={set('phone')} />

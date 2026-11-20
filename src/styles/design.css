@@ -571,3 +571,15 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes overlayIn { from { opacity: 0; } }
 @keyframes cardIn { from { transform: scale(0.8); opacity: 0; } }
+/* Language select in headers */
+.lang-select { width: auto; min-width: 128px; font-size: 13px; padding: 8px 10px; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.55); border-radius: 999px; }
+.lang-select option { color: var(--ink); }
+/* Searchable country dropdown */
+.country-select { position: relative; }
+.country-toggle { text-align: left; cursor: pointer; }
+.country-dropdown { position: absolute; top: calc(100% + 6px); left: 0; right: 0; min-width: 280px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgba(10,16,35,0.14); padding: 8px; z-index: 80; }
+.country-dropdown .input { margin-bottom: 8px; }
+.country-dropdown ul { list-style: none; margin: 0; padding: 0; max-height: 300px; overflow: auto; }
+.country-dropdown li button { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; background: none; border: 0; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--ink); }
+.country-dropdown li button:hover { background: var(--primary-soft); }
+.country-dropdown .country-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

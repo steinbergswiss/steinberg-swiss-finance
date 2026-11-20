@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useStore } from '../lib/store.jsx';
 import { Alert } from './ui.jsx';
+import LanguageSelect from './LanguageSelect.jsx';
 
 import social1 from '../assets/img/60e480545285521588bab0d1_icon-social-media-01-banca-template.svg';
 import social2 from '../assets/img/60e48054528552a715bab0d2_icon-social-media-02-banca-template.svg';
@@ -38,6 +39,7 @@ export function PublicHeader() {
           <NavLink to="/contact" onClick={() => setMenuOpen(false)}>Contact Us</NavLink>
         </nav>
         <div className="header-actions">
+          <LanguageSelect />
           {session ? (
             <Link className="btn btn-secondary btn-sm" to={session.role === 'admin' ? '/admin' : '/app'}>
               Go to {session.role === 'admin' ? 'console' : 'banking'}
@@ -67,9 +69,6 @@ export function PublicFooter() {
         <div className="footer-grid">
           <div>
             <Brand />
-            <p className="mg-top-16">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.
-            </p>
             <div className="flex gap-12" style={{ marginTop: 16 }}>
               {[social1, social2, social3, social4].map((s, i) => (
                 <img key={i} src={s} alt="" style={{ width: 22, cursor: 'pointer' }} />
@@ -104,7 +103,6 @@ export function PublicFooter() {
               <li><Link to="/">Licenses</Link></li>
               <li><Link to="/">Start Here</Link></li>
               <li><Link to="/">Changelog</Link></li>
-              <li><a href="https://brixtemplates.com/more-templates" target="_blank" rel="noreferrer">Browse More Templates</a></li>
             </ul>
           </div>
         </div>
@@ -154,6 +152,7 @@ export function AppShell({ role }) {
         <div className="container">
           <Brand to={role === 'admin' ? '/admin' : '/app'} />
           <div className="header-actions">
+            <LanguageSelect />
             <button className="menu-toggle" aria-label="Menu" onClick={() => setNavOpen(!navOpen)}>
               <span /><span /><span />
             </button>

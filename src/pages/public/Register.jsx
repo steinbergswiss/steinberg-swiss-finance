@@ -4,6 +4,7 @@ import { useStore } from '../../lib/store.jsx';
 import { registerCustomer, validateRegistration } from '../../lib/banking.js';
 import { getSetting, groupAccountNumber } from '../../lib/format.js';
 import { Field, Alert } from '../../components/ui.jsx';
+import CountrySelect from '../../components/CountrySelect.jsx';
 
 const EMPTY = { name: '', email: '', countryCode: '41', phone: '', password: '', confirm: '', agree: false };
 
@@ -73,7 +74,7 @@ export default function Register() {
                 <input className="input" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com" />
               </Field>
               <Field label="Country code" required error={errFor('The country')}>
-                <input className="input" value={form.countryCode} onChange={set('countryCode')} placeholder="41" />
+                <CountrySelect value={`+${form.countryCode}`} onChange={(d) => setForm({ ...form, countryCode: d.replace("+", "") })} />
               </Field>
             </div>
             <Field label="Phone" required error={errFor('The phone')}>
