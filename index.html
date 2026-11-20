@@ -15,7 +15,10 @@
     <style>
       .boot-loader { position: fixed; inset: 0; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center; background: #fff; z-index: 9999; }
       .boot-loader .spin { width: 46px; height: 46px; border: 4px solid #fbe3e7; border-top-color: #f20823; border-radius: 50%; animation: bootspin 0.8s linear infinite; }
-      .boot-loader .boot-logo { width: 64px; height: 64px; animation: bootspin 1s linear infinite; }
+      .boot-loader .boot-logo { width: 64px; height: 64px; animation: bootspin 0.5s linear infinite; }
+      .boot-bar { width: 220px; height: 6px; background: #fbe3e7; border-radius: 999px; overflow: hidden; }
+      .boot-bar-fill { width: 0%; height: 100%; background: #f20823; transition: width 0.08s linear; }
+      .boot-pct { font-family: sans-serif; color: #848894; font-size: 12px; }
       .boot-loader .boot-text { font-family: sans-serif; color: #848894; font-size: 14px; letter-spacing: 0.4px; }
       @keyframes bootspin { to { transform: rotate(360deg); } }
     </style>
@@ -28,7 +31,22 @@
           <text x="16" y="22" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">SS</text>
         </svg>
         <div class="boot-text">Loading Steinberg Swiss Finance…</div>
+        <div class="boot-bar"><div class="boot-bar-fill" id="boot-fill"></div></div>
+        <div class="boot-pct" id="boot-pct">0%</div>
       </div>
+      <script>
+        (function () {
+          var fill = document.getElementById('boot-fill');
+          var pct = document.getElementById('boot-pct');
+          var p = 0;
+          var t = setInterval(function () {
+            p = Math.min(100, p + 2);
+            if (fill) fill.style.width = p + '%';
+            if (pct) pct.textContent = p + '%';
+            if (p >= 100) clearInterval(t);
+          }, 16);
+        })();
+      </script>
     </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

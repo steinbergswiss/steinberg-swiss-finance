@@ -111,7 +111,7 @@ export function PublicFooter() {
       </div>
       <div className="footer-fine">
         <div className="container">
-          © Copyright Steinberg Swiss Finance
+          © Copyright Steinberg Swiss Finance · Build {typeof __BUILD__ !== 'undefined' ? __BUILD__ : 'dev'}
         </div>
       </div>
     </footer>

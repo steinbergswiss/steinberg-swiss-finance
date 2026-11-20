@@ -10,6 +10,9 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 export default defineConfig({
   plugins: [react(), viteSingleFile()],
   base: './',
+  define: {
+    __BUILD__: JSON.stringify(new Date().toISOString().slice(0, 19) + 'Z'),
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,
