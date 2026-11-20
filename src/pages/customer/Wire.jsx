@@ -53,7 +53,7 @@ export default function Wire() {
   return (
     <>
       <div className="page-title-row">
-        <h1>Wire transfer</h1>
+        <h1>International Wire Transfer</h1>
         <span className="badge badge-neutral">Requires approval</span>
       </div>
 
@@ -106,9 +106,9 @@ export default function Wire() {
         </div>
 
         <div className="card">
-          <div className="card-title">Your wire transfers</div>
+          <div className="card-title">Your international wire transfers</div>
           {mine.length === 0 ? (
-            <p className="text-muted">No wire transfers yet.</p>
+            <p className="text-muted">No international wire transfers yet.</p>
           ) : (
             <div className="table-wrap" style={{ boxShadow: 'none' }}>
               <table className="table">

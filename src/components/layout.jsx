@@ -2,7 +2,7 @@
 // template; the customer app and the admin console share one app shell with
 // role-specific navigation — same brand, same type, same red header.
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useStore } from '../lib/store.jsx';
 import { Alert } from './ui.jsx';
@@ -23,15 +23,19 @@ export function Brand({ to = '/', small = true }) {
 
 export function PublicHeader() {
   const { session } = useStore();
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className="site-header no-print">
       <div className="container">
         <Brand />
-        <nav className="site-nav" aria-label="Public">
-          <NavLink to="/" end>Home</NavLink>
-          <NavLink to="/rates">Services</NavLink>
-          <NavLink to="/about">About Us</NavLink>
-          <NavLink to="/contact">Contact Us</NavLink>
+        <button className="menu-toggle" aria-label="Menu" onClick={() => setMenuOpen(!menuOpen)}>
+          <span /><span /><span />
+        </button>
+        <nav className={`site-nav${menuOpen ? ' open' : ''}`} aria-label="Public">
+          <NavLink to="/" end onClick={() => setMenuOpen(false)}>Home</NavLink>
+          <NavLink to="/rates" onClick={() => setMenuOpen(false)}>Services</NavLink>
+          <NavLink to="/about" onClick={() => setMenuOpen(false)}>About Us</NavLink>
+          <NavLink to="/contact" onClick={() => setMenuOpen(false)}>Contact Us</NavLink>
         </nav>
         <div className="header-actions">
           {session ? (
@@ -118,9 +122,9 @@ const CUSTOMER_NAV = [
   ['/app', 'Dashboard', true],
   ['/app/accounts', 'Accounts'],
   ['/app/transactions', 'Transactions'],
-  ['/app/transfer', 'Transfer'],
+  ['/app/transfer', 'Local transfer'],
   ['/app/deposit', 'Deposit'],
-  ['/app/wire', 'Wire transfer'],
+  ['/app/wire', 'International Wire Transfer'],
   ['/app/beneficiaries', 'Beneficiaries'],
   ['/app/cards', 'Cards'],
   ['/app/statements', 'Statements'],
@@ -133,7 +137,7 @@ const ADMIN_NAV = [
   ['/admin/users', 'Users'],
   ['/admin/accounts', 'Accounts'],
   ['/admin/deposits', 'Deposits'],
-  ['/admin/wire-transfers', 'Wire transfers'],
+  ['/admin/wire-transfers', 'International Wire Transfers'],
   ['/admin/transactions', 'Transactions'],
   ['/admin/pending-transfers', 'Pending transfers'],
   ['/admin/notices', 'Notices'],
@@ -142,6 +146,7 @@ const ADMIN_NAV = [
 
 export function AppShell({ role }) {
   const { currentUser, signOut, resetData } = useStore();
+  const [navOpen, setNavOpen] = useState(false);
   const nav = role === 'admin' ? ADMIN_NAV : CUSTOMER_NAV;
   return (
     <>
@@ -149,6 +154,9 @@ export function AppShell({ role }) {
         <div className="container">
           <Brand to={role === 'admin' ? '/admin' : '/app'} />
           <div className="header-actions">
+            <button className="menu-toggle" aria-label="Menu" onClick={() => setNavOpen(!navOpen)}>
+              <span /><span /><span />
+            </button>
             {currentUser && currentUser.profilePicture && (
               <img src={currentUser.profilePicture} alt="" className="avatar" />
             )}
@@ -162,10 +170,10 @@ export function AppShell({ role }) {
           </div>
         </div>
       </header>
-      <nav className="sub-nav no-print" aria-label={role === 'admin' ? 'Admin' : 'Customer'}>
+      <nav className={`sub-nav no-print${navOpen ? ' open' : ''}`} aria-label={role === 'admin' ? 'Admin' : 'Customer'}>
         <div className="container">
           {nav.map(([to, label, end]) => (
-            <NavLink key={to} to={to} end={Boolean(end)}>
+            <NavLink key={to} to={to} end={Boolean(end)} onClick={() => setNavOpen(false)}>
               {label}
             </NavLink>
           ))}

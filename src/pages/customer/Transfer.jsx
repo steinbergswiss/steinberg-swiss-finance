@@ -76,7 +76,7 @@ export default function Transfer() {
   return (
     <>
       <div className="page-title-row">
-        <h1>Internal transfer</h1>
+        <h1>Local transfer</h1>
         <span className="badge badge-neutral">Between accounts only</span>
       </div>
 
@@ -150,7 +150,7 @@ export default function Transfer() {
               </Field>
             )}
             <button className="btn btn-block btn-lg" type="submit">
-              {otpEnabled && otp.code ? 'Verify & send money' : 'Send money'}
+              {otpEnabled && otp.code ? 'Verify & send local transfer' : 'Send local transfer'}
             </button>
           </form>
         </div>

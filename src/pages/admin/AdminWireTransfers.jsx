@@ -20,12 +20,12 @@ export default function AdminWireTransfers() {
   return (
     <>
       <div className="page-title-row">
-        <h1>Wire transfers</h1>
+        <h1>International Wire Transfers</h1>
         <span className="badge badge-neutral">{pending} pending</span>
       </div>
 
       {rows.length === 0 ? (
-        <EmptyState title="No wire transfer requests" />
+        <EmptyState title="No international wire transfer requests" />
       ) : (
         <div className="table-wrap">
           <table className="table">

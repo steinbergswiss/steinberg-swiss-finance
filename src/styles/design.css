@@ -545,3 +545,12 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
   .wallet-card .wc-balance { font-size: 27px; }
 }
 .avatar-placeholder { width: 96px; height: 96px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; }
+.menu-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 44px; height: 44px; background: transparent; border: 1px solid rgba(255,255,255,0.55); border-radius: 8px; cursor: pointer; padding: 10px; }
+.menu-toggle span { display: block; height: 2px; background: #fff; border-radius: 2px; }
+@media (max-width: 767px) {
+  .menu-toggle { display: flex; }
+  .site-nav { display: none; }
+  .site-nav.open { display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 8px 0; }
+  .sub-nav .container { display: none; }
+  .sub-nav.open .container { display: flex; flex-direction: column; align-items: stretch; padding-top: 6px; padding-bottom: 6px; }
+}

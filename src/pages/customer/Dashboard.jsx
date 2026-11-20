@@ -23,8 +23,18 @@ export default function Dashboard() {
   return (
     <>
       <div className="page-title-row">
-        <h1>Good day, {currentUser.name.split(' ')[0]}</h1>
-        <Link className="btn btn-sm" to="/app/transfer">New transfer</Link>
+        <div className="flex items-center gap-12" style={{ gap: 12 }}>
+          {currentUser.profilePicture ? (
+            <img src={currentUser.profilePicture} alt="Profile" style={{ width: 56, height: 56, borderRadius: 999, objectFit: 'cover', border: '2px solid var(--line)' }} />
+          ) : (
+            <div className="avatar-placeholder" style={{ width: 56, height: 56, fontSize: 22 }}>{currentUser.name.charAt(0).toUpperCase()}</div>
+          )}
+          <h1>Good day, {currentUser.name.split(' ')[0]}</h1>
+        </div>
+        <div className="actions">
+          <Link className="btn btn-sm" to="/app/transfer">Local transfer</Link>
+          <Link className="btn btn-secondary btn-sm" to="/app/wire">International Wire Transfer</Link>
+        </div>
       </div>
 
       <div className="wallet-card mg-bottom-24">
@@ -39,7 +49,8 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="wc-actions">
-          <Link to="/app/transfer" className="btn btn-secondary btn-sm">Send money</Link>
+          <Link to="/app/transfer" className="btn btn-secondary btn-sm">Local transfer</Link>
+          <Link to="/app/wire" className="btn btn-secondary btn-sm">International Wire Transfer</Link>
           <Link to="/app/statements" className="btn btn-secondary btn-sm">Statements</Link>
           <Link to="/app/cards" className="btn btn-secondary btn-sm">Cards</Link>
           <Link to="/app/tickets" className="btn btn-secondary btn-sm">Support</Link>
