@@ -8,12 +8,46 @@ import { buildSeed, SEED_VERSION } from '../data/seed.js';
 export const STORAGE_KEY = 'steinberg-state-v1';
 export const SESSION_KEY = 'steinberg-session-v1';
 
+function upgradeState(parsed) {
+  const seed = buildSeed();
+  if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.users)) return seed;
+
+  // Keep the visitor's data. Only backfill fields/settings that are new.
+  const out = { ...seed, ...parsed };
+  out.settings = { ...seed.settings, ...(parsed.settings || {}) };
+  out.users = parsed.users.map((u) => ({
+    ...u,
+    currencies:
+      Array.isArray(u.currencies) && u.currencies.length
+        ? u.currencies
+        : seed.users.find((su) => su.id === u.id)?.currencies || [1, 2, 3],
+    profilePicture: u.profilePicture || '',
+    allowWithdrawal: u.allowWithdrawal === undefined ? 1 : u.allowWithdrawal,
+  }));
+  const collections = [
+    'transactions',
+    'currencies',
+    'branches',
+    'beneficiaries',
+    'cards',
+    'tickets',
+    'ticketMessages',
+    'notices',
+    'contactMessages',
+    'counter',
+  ];
+  for (const key of collections) {
+    if (out[key] === undefined) out[key] = seed[key];
+  }
+  out.version = SEED_VERSION;
+  return out;
+}
+
 function loadInitialState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && parsed.version === SEED_VERSION) return parsed;
+      return upgradeState(JSON.parse(raw));
     }
   } catch {
     /* corrupted storage -> fall back to seed */
