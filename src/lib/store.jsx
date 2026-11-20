@@ -2,8 +2,9 @@
 // Every mutation goes through the shared modules in banking.js.
 // A "Reset data" control restores the seed and clears the session.
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { buildSeed, SEED_VERSION } from '../data/seed.js';
+import { supabase } from './supabase.js';
 
 export const STORAGE_KEY = 'steinberg-state-v1';
 export const SESSION_KEY = 'steinberg-session-v1';
@@ -84,6 +85,51 @@ export function StoreProvider({ children }) {
     } catch {
       /* storage full / unavailable */
     }
+  }, [state]);
+
+  // Shared cloud persistence (Supabase). Hydrate once from the remote row;
+  // afterwards every change is pushed back (debounced). localStorage remains
+  // as an instant offline cache.
+  const hydratedRef = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await supabase.from('app_state').select('data').eq('id', 1).maybeSingle();
+        if (cancelled) return;
+        if (data && data.data) {
+          setState(upgradeState(data.data));
+        } else {
+          await supabase.from('app_state').upsert({
+            id: 1,
+            data: loadInitialState(),
+            updated_at: new Date().toISOString(),
+          });
+        }
+      } catch (e) {
+        console.error('Cloud hydrate failed:', e);
+      }
+      if (!cancelled) {
+        hydratedRef.current = true;
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    const t = setTimeout(() => {
+      supabase
+        .from('app_state')
+        .upsert({ id: 1, data: state, updated_at: new Date().toISOString() })
+        .then(({ error }) => {
+          if (error) console.error('Cloud save failed:', error);
+        });
+    }, 800);
+    return () => clearTimeout(t);
   }, [state]);
 
   useEffect(() => {
