@@ -557,3 +557,17 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
   .sub-nav .container { display: none; }
   .sub-nav.open .container { display: flex; flex-direction: column; align-items: stretch; padding-top: 6px; padding-bottom: 6px; }
 }
+/* Full-page transfer success overlay */
+.success-overlay { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(242,8,35,0.97), rgba(156,10,28,0.97)); animation: overlayIn 0.3s ease; }
+.success-card { text-align: center; color: #fff; padding: 24px; animation: cardIn 0.45s cubic-bezier(0.2, 1.4, 0.4, 1); }
+.success-check { width: 120px; height: 120px; display: block; margin: 0 auto; }
+.success-check circle { fill: none; stroke: #fff; stroke-width: 5; stroke-dasharray: 290; stroke-dashoffset: 290; animation: draw 0.6s ease forwards; }
+.success-check path { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s 0.45s ease forwards; }
+.success-card h2 { color: #fff; font-size: 34px; margin: 18px 0 6px; animation: rise 0.5s 0.7s ease both; }
+.success-amount { font-size: 44px; font-weight: 800; animation: rise 0.5s 0.85s ease both; }
+.success-card p { color: rgba(255,255,255,0.92); margin: 4px 0 0; animation: rise 0.5s 0.95s ease both; }
+.success-subtitle { font-size: 15px; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes overlayIn { from { opacity: 0; } }
+@keyframes cardIn { from { transform: scale(0.8); opacity: 0; } }

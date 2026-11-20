@@ -3,6 +3,7 @@ import { useStore } from '../../lib/store.jsx';
 import { balanceFor, enabledCurrenciesFor, submitWireTransfer } from '../../lib/banking.js';
 import { formatMoney, formatDate } from '../../lib/format.js';
 import { Field, Alert, StatusBadge } from '../../components/ui.jsx';
+import SuccessOverlay from '../../components/SuccessOverlay.jsx';
 
 export default function Wire() {
   const { state, currentUser, apply } = useStore();
@@ -17,6 +18,7 @@ export default function Wire() {
   });
   const [errors, setErrors] = useState([]);
   const [done, setDone] = useState(null);
+  const [celebrate, setCelebrate] = useState(null);
   const currencies = enabledCurrenciesFor(state, currentUser.id);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
@@ -43,6 +45,12 @@ export default function Wire() {
     }
     apply(result);
     setDone(result.message);
+    setCelebrate({
+      title: 'International Wire Transfer Request Sent',
+      amount: formatMoney(Number(form.amount), Number(form.currencyId), state.currencies, state.settings),
+      detail: `To ${form.accountHolderName} · ${form.bank}`,
+      subtitle: 'It will be reviewed by the admin.',
+    });
     setForm({ bank: '', swiftCode: '', currencyId: '', amount: '', accountNumber: '', accountHolderName: '', note: '' });
   };
 
@@ -52,6 +60,7 @@ export default function Wire() {
 
   return (
     <>
+      {celebrate && <SuccessOverlay {...celebrate} onClose={() => setCelebrate(null)} />}
       <div className="page-title-row">
         <h1>International Wire Transfer</h1>
         <span className="badge badge-neutral">Requires approval</span>

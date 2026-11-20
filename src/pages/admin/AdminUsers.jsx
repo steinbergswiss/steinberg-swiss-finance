@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useStore } from '../../lib/store.jsx';
 import { adminCreateUser, adminDeleteUser, adminUpdateUser } from '../../lib/banking.js';
 import { formatDate } from '../../lib/format.js';
+import { compressAndUploadImage } from '../../lib/uploadImage.js';
 import { Field, Modal, UserStatusBadge, Badge, Alert } from '../../components/ui.jsx';
 
 const EMPTY = {
@@ -36,25 +37,19 @@ export default function AdminUsers() {
 
   const branchFor = (id) => state.branches.find((b) => b.id === id)?.name || '—';
 
-  const onPicture = (e) => {
+  const [uploading, setUploading] = useState(false);
+
+  const onPicture = async (e) => {
     const file = e.target.files && e.target.files[0];
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const size = 200;
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        const min = Math.min(img.width, img.height);
-        ctx.drawImage(img, (img.width - min) / 2, (img.height - min) / 2, min, min, 0, 0, size, size);
-        setForm({ ...form, profilePicture: canvas.toDataURL('image/jpeg', 0.85) });
-      };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
+    if (!file) return;
+    setUploading(true);
+    const result = await compressAndUploadImage(file);
+    setUploading(false);
+    if (!result.ok) {
+      setErrors([result.error]);
+      return;
+    }
+    setForm({ ...form, profilePicture: result.url });
   };
 
   const open = (u) => {
@@ -173,8 +168,8 @@ export default function AdminUsers() {
                 <div className="avatar-placeholder" style={{ width: 72, height: 72, fontSize: 26 }}>{form.name ? form.name.charAt(0).toUpperCase() : '?'}</div>
               )}
               <label className="btn btn-ghost btn-sm" style={{ cursor: 'pointer' }}>
-                {form.profilePicture ? 'Change picture' : 'Upload picture'}
-                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={onPicture} />
+                {uploading ? 'Uploading…' : form.profilePicture ? 'Change picture' : 'Upload picture'}
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={onPicture} disabled={uploading} />
               </label>
               {form.profilePicture && (
                 <button type="button" className="btn-link" onClick={() => setForm({ ...form, profilePicture: '' })}>Remove</button>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStore } from '../../lib/store.jsx';
 import { changePassword, updateProfile, updateProfilePicture } from '../../lib/banking.js';
+import { compressAndUploadImage } from '../../lib/uploadImage.js';
 import { formatDate } from '../../lib/format.js';
 import { Field, Alert, KeyValue, Badge } from '../../components/ui.jsx';
 
@@ -20,26 +21,19 @@ export default function Profile() {
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
-  const onPicture = (e) => {
+  const [uploading, setUploading] = useState(false);
+
+  const onPicture = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const size = 200;
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        const min = Math.min(img.width, img.height);
-        ctx.drawImage(img, (img.width - min) / 2, (img.height - min) / 2, min, min, 0, 0, size, size);
-        apply(updateProfilePicture(state, currentUser.id, canvas.toDataURL('image/jpeg', 0.85)));
-      };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
+    setUploading(true);
+    const result = await compressAndUploadImage(file);
+    setUploading(false);
+    if (!result.ok) {
+      setErrors([result.error]);
+      return;
+    }
+    apply(updateProfilePicture(state, currentUser.id, result.url));
   };
   const setPwField = (k) => (e) => setPw({ ...pw, [k]: e.target.value });
 
@@ -91,8 +85,8 @@ export default function Profile() {
               <div className="avatar-placeholder">{currentUser.name.charAt(0).toUpperCase()}</div>
             )}
             <label className="btn btn-ghost btn-sm" style={{ cursor: 'pointer' }}>
-              {currentUser.profilePicture ? 'Change picture' : 'Upload picture'}
-              <input type="file" accept="image/*" style={{ display: 'none' }} onChange={onPicture} />
+              {uploading ? 'Uploading…' : currentUser.profilePicture ? 'Change picture' : 'Upload picture'}
+              <input type="file" accept="image/*" style={{ display: 'none' }} onChange={onPicture} disabled={uploading} />
             </label>
           </div>
           {errors.length > 0 && <Alert type="error">{errors.join(' ')}</Alert>}

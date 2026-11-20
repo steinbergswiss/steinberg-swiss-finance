@@ -3,6 +3,7 @@ import { useStore } from '../../lib/store.jsx';
 import { balanceFor, enabledCurrenciesFor, findUserByAccountOrEmail, submitTransfer, transferCharge } from '../../lib/banking.js';
 import { formatMoney, getSetting } from '../../lib/format.js';
 import { Field, Alert } from '../../components/ui.jsx';
+import SuccessOverlay from '../../components/SuccessOverlay.jsx';
 
 export default function Transfer() {
   const { state, currentUser, apply } = useStore();
@@ -10,6 +11,7 @@ export default function Transfer() {
   const [errors, setErrors] = useState([]);
   const [done, setDone] = useState(null);
   const [otp, setOtp] = useState({ code: '', input: '' });
+  const [celebrate, setCelebrate] = useState(null);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -49,6 +51,14 @@ export default function Transfer() {
       ? ` Recipient: ${result.recipient.name} (${result.recipient.accountNumber}).`
       : '';
     setDone({ message: `${result.message}${who}`, debitId: result.debit.id });
+    setCelebrate({
+      title: actionMode === '1' ? 'Transfer Request Submitted' : 'Transfer Successful',
+      amount: formatMoney(amountN, Number(form.currencyId), state.currencies, state.settings),
+      detail: result.recipient
+        ? `To ${result.recipient.name} · ${result.recipient.accountNumber}`
+        : '',
+      subtitle: actionMode === '1' ? 'It will be credited once approved by the admin.' : 'Your money is on its way.',
+    });
     setForm({ ...form, amount: '', note: '' });
     setOtp({ code: '', input: '' });
   };
@@ -75,6 +85,7 @@ export default function Transfer() {
 
   return (
     <>
+      {celebrate && <SuccessOverlay {...celebrate} onClose={() => setCelebrate(null)} />}
       <div className="page-title-row">
         <h1>Local transfer</h1>
         <span className="badge badge-neutral">Between accounts only</span>
