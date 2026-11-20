@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useStore } from '../../lib/store.jsx';
 import { formatMoney, formatDate } from '../../lib/format.js';
 import { StatusBadge, EmptyState } from '../../components/ui.jsx';
@@ -75,7 +76,7 @@ export default function AdminTransactions() {
                 const u = userFor(t.userId);
                 return (
                   <tr key={t.id}>
-                    <td className="mono">#{t.id}</td>
+                    <td className="mono"><Link className="row-link" to={`/admin/transactions/${t.id}`}>#{t.id}</Link></td>
                     <td className="text-bold">{u ? u.name : `user ${t.userId}`}</td>
                     <td className="nowrap">{formatDate(t.createdAt, state.settings)}</td>
                     <td>{t.type.replace(/_/g, ' ')}</td>

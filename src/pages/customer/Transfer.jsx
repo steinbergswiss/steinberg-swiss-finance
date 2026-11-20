@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '../../lib/store.jsx';
-import { balanceFor, findUserByAccountOrEmail, submitTransfer, transferCharge } from '../../lib/banking.js';
+import { balanceFor, enabledCurrenciesFor, findUserByAccountOrEmail, submitTransfer, transferCharge } from '../../lib/banking.js';
 import { formatMoney, getSetting } from '../../lib/format.js';
 import { Field, Alert } from '../../components/ui.jsx';
 
@@ -9,6 +9,7 @@ export default function Transfer() {
   const [form, setForm] = useState({ userAccount: '', currencyId: '', amount: '', note: '' });
   const [errors, setErrors] = useState([]);
   const [done, setDone] = useState(null);
+  const [otp, setOtp] = useState({ code: '', input: '' });
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -26,13 +27,12 @@ export default function Transfer() {
     [state, form.userAccount],
   );
 
+  const currencies = enabledCurrenciesFor(state, currentUser.id);
   const balance = form.currencyId ? balanceFor(state, currentUser.id, Number(form.currencyId)) : null;
   const actionMode = getSetting(state.settings, 'send_money_action', '2');
+  const otpEnabled = getSetting(state.settings, 'send_money_otp', '0') === '1';
 
-  const submit = (e) => {
-    e.preventDefault();
-    setErrors([]);
-    setDone(null);
+  const executeTransfer = () => {
     const result = submitTransfer(state, {
       fromUserId: currentUser.id,
       userAccount: form.userAccount,
@@ -45,8 +45,32 @@ export default function Transfer() {
       return;
     }
     apply(result);
-    setDone({ message: result.message, debitId: result.debit.id });
+    const who = result.recipient
+      ? ` Recipient: ${result.recipient.name} (${result.recipient.accountNumber}).`
+      : '';
+    setDone({ message: `${result.message}${who}`, debitId: result.debit.id });
     setForm({ ...form, amount: '', note: '' });
+    setOtp({ code: '', input: '' });
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    setErrors([]);
+    setDone(null);
+
+    if (otpEnabled) {
+      if (!otp.code) {
+        // Generate and show a code (static app has no email/SMS transport)
+        const code = String(Math.floor(100000 + Math.random() * 900000));
+        setOtp({ code, input: '' });
+        return;
+      }
+      if (otp.input !== otp.code) {
+        setErrors(['OTP Code is expired or invalid !']);
+        return;
+      }
+    }
+    executeTransfer();
   };
 
   return (
@@ -63,6 +87,12 @@ export default function Transfer() {
           {done && (
             <Alert type={actionMode === '1' ? 'warning' : 'success'}>
               {done.message} Ledger entries: debit #{done.debitId} and its matching credit.
+            </Alert>
+          )}
+          {otpEnabled && otp.code && (
+            <Alert type="info">
+              Your verification code is <span className="text-bold">{otp.code}</span>. Enter it below to
+              confirm the transfer. (No email or SMS is sent in this static app.)
             </Alert>
           )}
           <form onSubmit={submit} noValidate>
@@ -83,11 +113,9 @@ export default function Transfer() {
             <Field label="Currency" required>
               <select className="select" value={form.currencyId} onChange={set('currencyId')}>
                 <option value="">Select one</option>
-                {state.currencies
-                  .filter((c) => c.status === 1)
-                  .map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
+                {currencies.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
               </select>
             </Field>
             {balance !== null && (
@@ -110,7 +138,20 @@ export default function Transfer() {
             <Field label="Note / description">
               <textarea className="textarea" style={{ minHeight: 90 }} value={form.note} onChange={set('note')} placeholder="What is this transfer for?" />
             </Field>
-            <button className="btn btn-block btn-lg" type="submit">Send money</button>
+            {otpEnabled && otp.code && (
+              <Field label="OTP code" required>
+                <input
+                  className="input mono"
+                  value={otp.input}
+                  onChange={(e) => setOtp({ ...otp, input: e.target.value })}
+                  placeholder="6-digit code"
+                  maxLength={6}
+                />
+              </Field>
+            )}
+            <button className="btn btn-block btn-lg" type="submit">
+              {otpEnabled && otp.code ? 'Verify & send money' : 'Send money'}
+            </button>
           </form>
         </div>
 
@@ -155,6 +196,7 @@ export default function Transfer() {
                   ? 'The admin must approve the transfer; until then the debit already reduces your balance (PHP rule).'
                   : 'Transfers post instantly as a debit + credit pair (PHP default).'}
               </li>
+              {otpEnabled && <li>OTP verification is enabled by the administrator.</li>}
             </ul>
           </div>
         </div>

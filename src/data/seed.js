@@ -5,7 +5,7 @@
 
 import { daysAgo } from '../lib/format.js';
 
-export const SEED_VERSION = 3;
+export const SEED_VERSION = 4;
 
 export function buildSeed() {
   const users = [
@@ -40,6 +40,7 @@ export function buildSeed() {
       profilePicture: '',
       emailVerifiedAt: daysAgo(45),
       allowWithdrawal: 1,
+      currencies: [1, 2, 3],
       createdAt: daysAgo(46),
     },
     {
@@ -57,6 +58,7 @@ export function buildSeed() {
       profilePicture: '',
       emailVerifiedAt: daysAgo(45),
       allowWithdrawal: 1,
+      currencies: [1, 2],
       createdAt: daysAgo(46),
     },
     {
@@ -74,6 +76,7 @@ export function buildSeed() {
       profilePicture: '',
       emailVerifiedAt: daysAgo(44),
       allowWithdrawal: 1,
+      currencies: [1, 2, 3],
       createdAt: daysAgo(45),
     },
     {
@@ -91,6 +94,7 @@ export function buildSeed() {
       profilePicture: '',
       emailVerifiedAt: daysAgo(30),
       allowWithdrawal: 1,
+      currencies: [1, 3],
       createdAt: daysAgo(31),
     },
   ];

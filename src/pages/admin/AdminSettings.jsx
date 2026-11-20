@@ -140,10 +140,10 @@ export default function AdminSettings() {
                   <option value="1">Approval — hold until an admin approves (lands in Pending transfers)</option>
                 </select>
               </Field>
-              <Field label="Transaction OTP" hint="PHP sends an email/SMS OTP. Static site: always off.">
+              <Field label="Transaction OTP" hint="When enabled, transfers require a 6-digit verification code (shown on screen — no email/SMS in this static app).">
                 <select className="select" value={form.send_money_otp} onChange={set('send_money_otp')}>
-                  <option value="0">Disabled (stub)</option>
-                  <option value="1">Enabled (stub — no code is ever sent)</option>
+                  <option value="0">Off</option>
+                  <option value="1">On — verification code required</option>
                 </select>
               </Field>
             </div>

@@ -120,6 +120,7 @@ const CUSTOMER_NAV = [
   ['/app/transactions', 'Transactions'],
   ['/app/transfer', 'Transfer'],
   ['/app/deposit', 'Deposit'],
+  ['/app/wire', 'Wire transfer'],
   ['/app/beneficiaries', 'Beneficiaries'],
   ['/app/cards', 'Cards'],
   ['/app/statements', 'Statements'],
@@ -132,6 +133,7 @@ const ADMIN_NAV = [
   ['/admin/users', 'Users'],
   ['/admin/accounts', 'Accounts'],
   ['/admin/deposits', 'Deposits'],
+  ['/admin/wire-transfers', 'Wire transfers'],
   ['/admin/transactions', 'Transactions'],
   ['/admin/pending-transfers', 'Pending transfers'],
   ['/admin/notices', 'Notices'],
@@ -147,6 +149,9 @@ export function AppShell({ role }) {
         <div className="container">
           <Brand to={role === 'admin' ? '/admin' : '/app'} />
           <div className="header-actions">
+            {currentUser && currentUser.profilePicture && (
+              <img src={currentUser.profilePicture} alt="" className="avatar" />
+            )}
             <span style={{ color: 'rgba(255,255,255,0.92)', fontWeight: 700, fontSize: 14 }}>
               {currentUser ? `${currentUser.name} · ${role === 'admin' ? 'Admin' : 'Customer'}` : ''}
             </span>

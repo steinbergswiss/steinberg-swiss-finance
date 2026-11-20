@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useStore } from '../../lib/store.jsx';
-import { changePassword, updateProfile } from '../../lib/banking.js';
+import { changePassword, updateProfile, updateProfilePicture } from '../../lib/banking.js';
 import { formatDate } from '../../lib/format.js';
 import { Field, Alert, KeyValue, Badge } from '../../components/ui.jsx';
 
@@ -19,6 +19,28 @@ export default function Profile() {
   const [pwErrors, setPwErrors] = useState([]);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  const onPicture = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const size = 200;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const min = Math.min(img.width, img.height);
+        ctx.drawImage(img, (img.width - min) / 2, (img.height - min) / 2, min, min, 0, 0, size, size);
+        apply(updateProfilePicture(state, currentUser.id, canvas.toDataURL('image/jpeg', 0.85)));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
   const setPwField = (k) => (e) => setPw({ ...pw, [k]: e.target.value });
 
   const save = (e) => {
@@ -61,6 +83,17 @@ export default function Profile() {
           <div className="card-title">
             Profile details
             {Number(currentUser.status) === 1 ? <Badge tone="success">Active</Badge> : <Badge tone="danger">Inactive</Badge>}
+          </div>
+          <div className="flex items-center gap-16 mg-bottom-16">
+            {currentUser.profilePicture ? (
+              <img src={currentUser.profilePicture} alt="Profile" style={{ width: 96, height: 96, borderRadius: 999, objectFit: 'cover', border: '2px solid var(--line)' }} />
+            ) : (
+              <div className="avatar-placeholder">{currentUser.name.charAt(0).toUpperCase()}</div>
+            )}
+            <label className="btn btn-ghost btn-sm" style={{ cursor: 'pointer' }}>
+              {currentUser.profilePicture ? 'Change picture' : 'Upload picture'}
+              <input type="file" accept="image/*" style={{ display: 'none' }} onChange={onPicture} />
+            </label>
           </div>
           {errors.length > 0 && <Alert type="error">{errors.join(' ')}</Alert>}
           {!editing ? (

@@ -15,6 +15,7 @@ const EMPTY = {
   status: 1,
   password: '',
   emailVerified: true,
+  currencies: [1],
 };
 
 export default function AdminUsers() {
@@ -50,6 +51,7 @@ export default function AdminUsers() {
             status: u.status,
             password: '',
             emailVerified: Boolean(u.emailVerifiedAt),
+            currencies: Array.isArray(u.currencies) && u.currencies.length ? [...u.currencies] : [1],
           }
         : EMPTY,
     );
@@ -183,6 +185,30 @@ export default function AdminUsers() {
                 </select>
               </Field>
             </div>
+            <Field label="Enabled currencies" hint="The customer can hold, view and transfer only these currencies.">
+              <div className="flex flex-wrap gap-8">
+                {state.currencies.filter((c) => c.status === 1).map((c) => {
+                  const checked = (form.currencies || []).includes(c.id);
+                  return (
+                    <label key={c.id} className="checkbox-row" style={{ flex: '0 0 auto' }}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() =>
+                          setForm({
+                            ...form,
+                            currencies: checked
+                              ? (form.currencies || []).filter((x) => x !== c.id)
+                              : [...(form.currencies || []), c.id],
+                          })
+                        }
+                      />
+                      <span>{c.name}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </Field>
             <button className="btn btn-block" type="submit">{editing?.id ? 'Save changes' : 'Create customer'}</button>
           </form>
         </Modal>

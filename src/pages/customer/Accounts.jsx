@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useStore } from '../../lib/store.jsx';
-import { balanceFor } from '../../lib/banking.js';
+import { balanceFor, balancesForUser } from '../../lib/banking.js';
 import { formatMoney, formatDate, getSetting } from '../../lib/format.js';
 import { KeyValue } from '../../components/ui.jsx';
 
@@ -10,12 +10,10 @@ export default function Accounts() {
   const branch = state.branches.find((b) => b.id === currentUser.branchId);
   const base = Number(getSetting(state.settings, 'base_currency', '1'));
 
-  const holdings = state.currencies
-    .filter((c) => c.status === 1)
-    .map((c) => ({
-      currency: c,
-      balance: balanceFor(state, userId, c.id),
-    }));
+  const holdings = balancesForUser(state, userId).map((b) => ({
+    currency: state.currencies.find((c) => c.id === b.currencyId),
+    balance: b.balance,
+  }));
 
   return (
     <>
