@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AppShell, PublicLayout, RequireRole } from './components/layout.jsx';
 
 // Public
@@ -37,7 +37,9 @@ import AdminNotices from './pages/admin/AdminNotices.jsx';
 import AdminSettings from './pages/admin/AdminSettings.jsx';
 
 export default function App() {
+  const location = useLocation();
   return (
+    <div className="page-fade" key={location.pathname}>
     <Routes>
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Home />} />
@@ -85,5 +87,6 @@ export default function App() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </div>
   );
 }

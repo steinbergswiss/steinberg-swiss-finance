@@ -355,7 +355,7 @@ export function adminCreateUser(state, form) {
     userType: 'customer',
     status: Number(form.status),
     branchId: Number(form.branchId),
-    profilePicture: '',
+    profilePicture: form.profilePicture || '',
     emailVerifiedAt: form.emailVerified ? ts : null,
     allowWithdrawal: 1,
     currencies: Array.isArray(form.currencies) && form.currencies.length ? form.currencies : [1],
@@ -379,6 +379,7 @@ export function adminUpdateUser(state, id, form) {
   user.status = Number(form.status);
   user.branchId = Number(form.branchId);
   if (Array.isArray(form.currencies) && form.currencies.length) user.currencies = form.currencies;
+  if (form.profilePicture !== undefined) user.profilePicture = form.profilePicture || '';
   if (form.password) user.password = String(form.password);
   return { ok: true, state: next, message: 'User updated successfully' };
 }

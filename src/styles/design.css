@@ -544,6 +544,9 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
   .detail-list dd { margin-bottom: 8px; }
   .wallet-card .wc-balance { font-size: 27px; }
 }
+@keyframes spin { to { transform: rotate(360deg); } }
+.page-fade { animation: fadeIn 0.28s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .avatar-placeholder { width: 96px; height: 96px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; }
 .menu-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 44px; height: 44px; background: transparent; border: 1px solid rgba(255,255,255,0.55); border-radius: 8px; cursor: pointer; padding: 10px; }
 .menu-toggle span { display: block; height: 2px; background: #fff; border-radius: 2px; }

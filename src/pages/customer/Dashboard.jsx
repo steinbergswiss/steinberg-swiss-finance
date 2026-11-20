@@ -90,7 +90,7 @@ export default function Dashboard() {
                         <Link className="row-link" to={`/app/transactions/${t.id}`}>
                           {t.type.replace(/_/g, ' ')}
                         </Link>
-                        <div className="text-muted" style={{ fontSize: 12.5 }}>{formatDate(t.createdAt, state.settings)}</div>
+                        <div className="text-muted" style={{ fontSize: 12.5 }}>{t.note || '—'} · {formatDate(t.createdAt, state.settings)}</div>
                       </td>
                       <td><StatusBadge status={t.status} /></td>
                       <td className={`num mono text-bold ${t.drCr === 'dr' ? 'text-danger' : 'text-success'}`}>

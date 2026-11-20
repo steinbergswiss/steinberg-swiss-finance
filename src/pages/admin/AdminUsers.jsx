@@ -36,6 +36,27 @@ export default function AdminUsers() {
 
   const branchFor = (id) => state.branches.find((b) => b.id === id)?.name || '—';
 
+  const onPicture = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const size = 200;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const min = Math.min(img.width, img.height);
+        ctx.drawImage(img, (img.width - min) / 2, (img.height - min) / 2, min, min, 0, 0, size, size);
+        setForm({ ...form, profilePicture: canvas.toDataURL('image/jpeg', 0.85) });
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const open = (u) => {
     setEditing(u || {});
     setForm(
@@ -43,6 +64,7 @@ export default function AdminUsers() {
         ? {
             name: u.name,
             email: u.email,
+            profilePicture: u.profilePicture || '', 
             username: u.username,
             accountNumber: u.accountNumber,
             countryCode: u.countryCode,
@@ -110,7 +132,16 @@ export default function AdminUsers() {
             {customers.map((u) => (
               <tr key={u.id}>
                 <td className="mono">#{u.id}</td>
-                <td className="text-bold">{u.name}</td>
+                <td>
+                  <div className="flex items-center gap-8" style={{ gap: 8 }}>
+                    {u.profilePicture ? (
+                      <img src={u.profilePicture} alt="" style={{ width: 32, height: 32, borderRadius: 999, objectFit: 'cover' }} />
+                    ) : (
+                      <span className="avatar-placeholder" style={{ width: 32, height: 32, fontSize: 14, flex: 'none' }}>{u.name.charAt(0).toUpperCase()}</span>
+                    )}
+                    <span className="text-bold">{u.name}</span>
+                  </div>
+                </td>
                 <td>{u.email}</td>
                 <td className="mono">{u.accountNumber}</td>
                 <td>+{u.countryCode} {u.phone}</td>
@@ -135,6 +166,20 @@ export default function AdminUsers() {
         <Modal title={editing.id ? `Edit user #${editing.id}` : 'Add customer'} onClose={() => setEditing(null)} wide>
           {errors.length > 0 && <Alert type="error">{errors.join(' ')}</Alert>}
           <form onSubmit={save} noValidate>
+            <div className="flex items-center gap-12 mg-bottom-16">
+              {form.profilePicture ? (
+                <img src={form.profilePicture} alt="" style={{ width: 72, height: 72, borderRadius: 999, objectFit: 'cover', border: '2px solid var(--line)' }} />
+              ) : (
+                <div className="avatar-placeholder" style={{ width: 72, height: 72, fontSize: 26 }}>{form.name ? form.name.charAt(0).toUpperCase() : '?'}</div>
+              )}
+              <label className="btn btn-ghost btn-sm" style={{ cursor: 'pointer' }}>
+                {form.profilePicture ? 'Change picture' : 'Upload picture'}
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={onPicture} />
+              </label>
+              {form.profilePicture && (
+                <button type="button" className="btn-link" onClick={() => setForm({ ...form, profilePicture: '' })}>Remove</button>
+              )}
+            </div>
             <div className="form-grid">
               <Field label="Name" required>
                 <input className="input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} maxLength={255} />
