@@ -31,10 +31,6 @@ export default function Dashboard() {
           )}
           <h1>Good day, {currentUser.name.split(' ')[0]}</h1>
         </div>
-        <div className="actions">
-          <Link className="btn btn-sm" to="/app/transfer">Local transfer</Link>
-          <Link className="btn btn-secondary btn-sm" to="/app/wire">International Wire Transfer</Link>
-        </div>
       </div>
 
       <div className="wallet-card mg-bottom-24">
