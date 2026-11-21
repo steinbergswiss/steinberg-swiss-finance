@@ -304,7 +304,7 @@ export function validateAdminUser(state, form, ignoreId = null) {
   const required = (v, msg) => !String(v ?? '').trim() && errors.push(msg);
 
   required(form.name, 'The name field is required.');
-  required(form.address, 'The address field is required.');
+  if (ignoreId === undefined) required(form.address, 'The address field is required.');
   if (String(form.name || '').length > 255) errors.push('The name may not be greater than 255 characters.');
   required(form.email, 'The email field is required.');
   if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.push('The email must be a valid email address.');
@@ -373,7 +373,7 @@ export function adminUpdateUser(state, id, form) {
   user.email = String(form.email).trim();
   user.username = String(form.username).trim();
   user.accountNumber = String(form.accountNumber).trim();
-  user.address = String(form.address || '').trim();
+  if (String(form.address || '').trim()) user.address = String(form.address).trim();
   if (form.countryIso !== undefined) user.countryIso = String(form.countryIso || '').trim() || user.countryIso || 'CH';
   user.countryCode = String(form.countryCode || '').trim();
   user.phone = String(form.phone || '').trim();
