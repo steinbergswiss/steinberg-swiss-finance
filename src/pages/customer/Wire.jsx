@@ -31,19 +31,16 @@ export default function Wire() {
       label: 'COT Code',
       hint: 'Contact support to provide code.',
       expected: () => String(currentUser?.cotCode || '').trim(),
-      placeholder: 'COT-123456',
     },
     {
       label: 'IMF Code',
       hint: 'Contact support to provide code.',
       expected: () => String(currentUser?.imfCode || '').trim(),
-      placeholder: 'IMF-123456',
     },
     {
       label: 'Swift Code',
       hint: 'Contact support to provide code.',
       expected: () => String(form.swiftCode || '').trim(),
-      placeholder: 'ABCDEF12XXX',
     },
   ];
   const currencies = enabledCurrenciesFor(state, currentUser.id);
@@ -151,13 +148,12 @@ export default function Wire() {
               <text x="16" y="22" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">SS</text>
             </svg>
             <h2>Processing…</h2>
-            <p>Preparing verification step {loadingStep} of 3.</p>
           </div>
         </div>
       )}
       {codeStep > 0 && loadingStep === 0 && (
         <Modal
-          title={`Step ${codeStep} of 3 — Verify ${STEP_META[codeStep].label}`}
+          title={`Verify ${STEP_META[codeStep].label}`}
           onClose={() => {
             if (!checking) {
               setCodeStep(0);
@@ -166,7 +162,6 @@ export default function Wire() {
             }
           }}
         >
-          <p className="field-hint mg-bottom-12">{STEP_META[codeStep].hint}</p>
           {codeError && <Alert type="error">{codeError}</Alert>}
           <Field label={STEP_META[codeStep].label} required>
             <input
@@ -174,7 +169,6 @@ export default function Wire() {
               autoFocus
               value={codeInput}
               onChange={(e) => setCodeInput(e.target.value)}
-              placeholder={STEP_META[codeStep].placeholder}
               disabled={checking}
             />
           </Field>
