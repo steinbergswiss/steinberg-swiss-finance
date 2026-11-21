@@ -64,7 +64,7 @@ export function FlashHost() {
   // Auto-dismiss after a few seconds
   useEffect(() => {
     if (!flash) return undefined;
-    const t = setTimeout(clearFlash, 4500);
+    const t = setTimeout(clearFlash, 45000);
     return () => clearTimeout(t);
   }, [flash, clearFlash]);
 
