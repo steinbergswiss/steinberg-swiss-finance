@@ -291,27 +291,7 @@ export function registerCustomer(state, form) {
   };
   next.users.push(user);
 
-  // Opening transaction so the account has a visible ledger
-  const txId = next.counter.transaction++;
-  next.transactions.push({
-    id: txId,
-    userId: id,
-    currencyId: 1,
-    amount: 1000,
-    fee: 0,
-    drCr: 'cr',
-    type: 'Deposit',
-    method: 'Manual',
-    status: STATUS.completed,
-    note: 'Welcome bonus',
-    parentId: null,
-    bank: null,
-    createdUserId: 1,
-    branchId: 1,
-    transactionDetails: null,
-    createdAt: ts,
-    updatedAt: ts,
-  });
+  // New accounts start at 0. Funds come from admin adjustments or transfers.
 
   return { ok: true, state: next, user, message: 'Registration successful. Your account is ready.' };
 }
