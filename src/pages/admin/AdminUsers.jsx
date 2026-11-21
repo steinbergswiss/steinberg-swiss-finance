@@ -14,7 +14,6 @@ const EMPTY = {
   countryCode: '41',
   countryIso: 'CH',
   phone: '',
-  branchId: 1,
   status: 1,
   password: '',
   pin: '',
@@ -41,8 +40,6 @@ export default function AdminUsers() {
         .sort((a, b) => b.id - a.id),
     [state.users, filter],
   );
-
-  const branchFor = (id) => state.branches.find((b) => b.id === id)?.name || '—';
 
   const [uploading, setUploading] = useState(false);
 
@@ -72,7 +69,6 @@ export default function AdminUsers() {
             countryCode: u.countryCode,
             countryIso: u.countryIso || '',
             phone: u.phone,
-            branchId: u.branchId,
             status: u.status,
             password: '',
             pin: '',
@@ -130,7 +126,6 @@ export default function AdminUsers() {
               <th>Email</th>
               <th>Account</th>
               <th>Phone</th>
-              <th>Branch</th>
               <th>Status</th>
               <th>Joined</th>
               <th className="text-right">Actions</th>
@@ -153,7 +148,6 @@ export default function AdminUsers() {
                 <td>{u.email}</td>
                 <td className="mono">{u.accountNumber}</td>
                 <td>+{u.countryCode} {u.phone}</td>
-                <td>{branchFor(u.branchId)}</td>
                 <td><UserStatusBadge status={u.status} /></td>
                 <td className="nowrap">{formatDate(u.createdAt, state.settings)}</td>
                 <td className="text-right nowrap">

@@ -143,7 +143,7 @@ export function submitTransfer(state, { fromUserId, userAccount, currencyId, amo
     parentId: null,
     bank: null,
     createdUserId: fromUserId,
-    branchId: from.branchId,
+    branchId: 1,
     transactionDetails: null,
     createdAt: ts,
     updatedAt: ts,
@@ -280,7 +280,6 @@ export function registerCustomer(state, form) {
     password: String(form.password),
     userType: 'customer',
     status: 1,
-    branchId: 1,
     profilePicture: form.profilePicture || '',
     pin: String(form.pin || '').trim(),
     // PHP: email_verified_at = now() when email_verification == 'disabled'
@@ -319,7 +318,6 @@ export function validateAdminUser(state, form, ignoreId = null) {
   if (form.accountNumber && state.users.some((u) => u.id !== ignoreId && u.accountNumber === String(form.accountNumber).trim())) {
     errors.push('The account number has already been taken.');
   }
-  required(form.branchId, 'The branch field is required.');
   required(form.status, 'The status field is required.');
   if (!ignoreId) {
     required(form.password, 'The password field is required.');
@@ -349,7 +347,6 @@ export function adminCreateUser(state, form) {
     password: String(form.password),
     userType: 'customer',
     status: Number(form.status),
-    branchId: Number(form.branchId),
     profilePicture: form.profilePicture || '',
     emailVerifiedAt: form.emailVerified ? ts : null,
     allowWithdrawal: 1,
@@ -378,7 +375,6 @@ export function adminUpdateUser(state, id, form) {
   user.countryCode = String(form.countryCode || '').trim();
   user.phone = String(form.phone || '').trim();
   user.status = Number(form.status);
-  user.branchId = Number(form.branchId);
   if (Array.isArray(form.currencies) && form.currencies.length) user.currencies = form.currencies;
   if (form.profilePicture !== undefined) user.profilePicture = form.profilePicture || '';
   if (String(form.pin || '').trim()) user.pin = String(form.pin).trim();

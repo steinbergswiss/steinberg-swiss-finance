@@ -27,7 +27,6 @@ export default function Accounts() {
           <div>
             <div className="wc-label">Current account — GBP</div>
             <div className="wc-account mono">{currentUser.accountNumber}</div>
-            <div className="wc-label mg-top-8">{branch ? branch.name : 'Branch'}</div>
           </div>
           <div style={{ textAlign: 'right' }}>
             <div className="wc-label">Balance</div>
@@ -74,7 +73,6 @@ export default function Accounts() {
               ['Account holder', currentUser.name],
               ['Account number', currentUser.accountNumber],
               ['Account type', 'Current'],
-              ['Branch', branch ? branch.name : '—'],
               ['Email', currentUser.email],
               ['Phone', `+${currentUser.countryCode} ${currentUser.phone}`],
               ['Opened', formatDate(currentUser.createdAt, state.settings)],

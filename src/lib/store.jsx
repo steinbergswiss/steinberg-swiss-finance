@@ -30,7 +30,10 @@ function upgradeState(parsed) {
     swiftCode: u.swiftCode || 'SSFICHZZXXX',
     address: u.address || '',
     countryIso: u.countryIso || 'CH',
-  }));
+  })).map((u) => {
+    const { branchId, ...rest } = u;
+    return rest;
+  });
   const collections = [
     'transactions',
     'currencies',
