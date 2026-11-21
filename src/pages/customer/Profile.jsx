@@ -63,7 +63,6 @@ export default function Profile() {
     setPw({ oldPassword: '', password: '', confirm: '' });
   };
 
-  const branch = state.branches.find((b) => b.id === currentUser.branchId);
 
   return (
     <>

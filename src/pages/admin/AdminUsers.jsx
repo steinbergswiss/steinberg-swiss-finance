@@ -161,7 +161,7 @@ export default function AdminUsers() {
       </div>
       <p className="field-hint mg-top-16">
         Ported from the PHP admin UserController: name/email/username/account-number uniqueness, required
-        branch & status, password min 6. KYC document verification is stubbed (no uploads on a static host).
+        status, password min 6. KYC document verification is stubbed (no uploads on a static host).
       </p>
 
       {editing && (

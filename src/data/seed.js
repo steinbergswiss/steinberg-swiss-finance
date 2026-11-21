@@ -46,7 +46,6 @@ export function buildSeed() {
       swiftCode: 'SSFICHZZXXX',
       userType: 'customer',
       status: 1,
-      branchId: 1,
       profilePicture: '',
       emailVerifiedAt: daysAgo(45),
       allowWithdrawal: 1,
@@ -116,7 +115,6 @@ export function buildSeed() {
       swiftCode: 'SSFICHZZXXX',
       userType: 'customer',
       status: 0, // inactive customer, so the admin "users" screen has both states
-      branchId: 2,
       profilePicture: '',
       emailVerifiedAt: daysAgo(30),
       allowWithdrawal: 1,

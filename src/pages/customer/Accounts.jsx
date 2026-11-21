@@ -7,7 +7,6 @@ import { KeyValue } from '../../components/ui.jsx';
 export default function Accounts() {
   const { state, currentUser } = useStore();
   const userId = currentUser.id;
-  const branch = state.branches.find((b) => b.id === currentUser.branchId);
   const base = Number(getSetting(state.settings, 'base_currency', '1'));
 
   const holdings = balancesForUser(state, userId).map((b) => ({
