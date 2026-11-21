@@ -41,7 +41,7 @@ export default function SignIn() {
         : res.role === 'admin'
           ? '/admin'
           : '/app';
-    notify('success', 'Signed in successfully.');
+    notify('success', 'Signed in successfully.', 10000);
     navigate(target, { replace: true });
   };
 

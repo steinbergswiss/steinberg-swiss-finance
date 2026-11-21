@@ -145,7 +145,7 @@ export function StoreProvider({ children }) {
     }
   }, [session]);
 
-  const notify = useCallback((type, text) => setFlash({ type, text, at: Date.now() }), []);
+  const notify = useCallback((type, text, duration) => setFlash({ type, text, at: Date.now(), duration }), []);
   const clearFlash = useCallback(() => setFlash(null), []);
 
   const apply = useCallback((result, fallbackMessage) => {
