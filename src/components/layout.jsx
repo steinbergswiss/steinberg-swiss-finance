@@ -2,7 +2,7 @@
 // template; the customer app and the admin console share one app shell with
 // role-specific navigation — same brand, same type, same red header.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useStore } from '../lib/store.jsx';
 import { Alert } from './ui.jsx';
@@ -58,6 +58,22 @@ export function PublicHeader() {
 
 export function FlashHost() {
   const { flash, clearFlash } = useStore();
+  const location = useLocation();
+  const prevPath = useRef(location.pathname);
+
+  // Auto-dismiss after a few seconds
+  useEffect(() => {
+    if (!flash) return undefined;
+    const t = setTimeout(clearFlash, 4500);
+    return () => clearTimeout(t);
+  }, [flash, clearFlash]);
+
+  // Disappear as soon as the page changes
+  useEffect(() => {
+    if (prevPath.current !== location.pathname) clearFlash();
+    prevPath.current = location.pathname;
+  }, [location.pathname, clearFlash]);
+
   if (!flash) return null;
   return <Alert type={flash.type} onClose={clearFlash}>{flash.text}</Alert>;
 }
