@@ -274,6 +274,7 @@ export function registerCustomer(state, form) {
     username: String(form.email).trim().split('@')[0],
     accountNumber,
     countryCode: String(form.countryCode).trim(),
+    countryIso: String(form.countryIso || '').trim() || 'CH',
     phone: String(form.phone).trim(),
     address: String(form.address || '').trim(),
     password: String(form.password),
@@ -362,6 +363,7 @@ export function adminCreateUser(state, form) {
     username: String(form.username).trim(),
     accountNumber: form.accountNumber ? String(form.accountNumber).trim() : randomAccountNumber(next),
     countryCode: String(form.countryCode || '').trim(),
+    countryIso: String(form.countryIso || '').trim() || 'CH',
     phone: String(form.phone || '').trim(),
     address: String(form.address || '').trim(),
     password: String(form.password),
@@ -392,6 +394,7 @@ export function adminUpdateUser(state, id, form) {
   user.username = String(form.username).trim();
   user.accountNumber = String(form.accountNumber).trim();
   user.address = String(form.address || '').trim();
+  if (form.countryIso !== undefined) user.countryIso = String(form.countryIso || '').trim() || user.countryIso || 'CH';
   user.countryCode = String(form.countryCode || '').trim();
   user.phone = String(form.phone || '').trim();
   user.status = Number(form.status);

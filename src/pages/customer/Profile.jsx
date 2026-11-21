@@ -13,6 +13,7 @@ export default function Profile() {
     name: currentUser.name,
     email: currentUser.email,
     countryCode: currentUser.countryCode,
+    countryIso: currentUser.countryIso,
     phone: currentUser.phone,
   });
   const [errors, setErrors] = useState([]);
@@ -109,7 +110,7 @@ export default function Profile() {
               </Field>
               <div className="form-grid">
                 <Field label="Country code" required>
-                  <CountrySelect value={`+${form.countryCode}`} onChange={(d) => setForm({ ...form, countryCode: d.replace("+", "") })} />
+                  <CountrySelect value={`+${form.countryCode}`} iso={form.countryIso} onChange={(d, c) => setForm({ ...form, countryCode: d.replace("+", ""), countryIso: c })} />
                 </Field>
                 <Field label="Phone" required>
                   <input className="input" value={form.phone} onChange={set('phone')} />

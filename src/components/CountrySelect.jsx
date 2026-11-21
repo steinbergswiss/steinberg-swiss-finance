@@ -2,11 +2,11 @@ import { useMemo, useState } from 'react';
 import { COUNTRIES, flagEmoji } from '../data/countries.js';
 
 // Searchable country + dial-code dropdown (includes every country, with "+").
-export default function CountrySelect({ value, onChange }) {
+export default function CountrySelect({ value, iso, onChange }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
 
-  const selected = COUNTRIES.find((c) => c.dial === value) || null;
+  const selected = COUNTRIES.find((c) => c.code === iso) || COUNTRIES.find((c) => c.dial === value) || null;
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -44,7 +44,7 @@ export default function CountrySelect({ value, onChange }) {
                 <button
                   type="button"
                   onClick={() => {
-                    onChange(c.dial);
+                    onChange(c.dial, c.code);
                     setOpen(false);
                     setQ('');
                   }}

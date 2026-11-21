@@ -7,7 +7,7 @@ import { Field, Alert } from '../../components/ui.jsx';
 import { compressAndUploadImage } from '../../lib/uploadImage.js';
 import CountrySelect from '../../components/CountrySelect.jsx';
 
-const EMPTY = { name: '', email: '', countryCode: '41', phone: '', address: '', password: '', confirm: '', pin: '', profilePicture: '', agree: false };
+const EMPTY = { name: '', email: '', countryCode: '41', countryIso: 'CH', phone: '', address: '', password: '', confirm: '', pin: '', profilePicture: '', agree: false };
 
 export default function Register() {
   const { state, apply, signInAs, notify } = useStore();
@@ -110,7 +110,7 @@ export default function Register() {
                 <input className="input" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com" />
               </Field>
               <Field label="Country code" required error={errFor('The country')}>
-                <CountrySelect value={`+${form.countryCode}`} onChange={(d) => setForm({ ...form, countryCode: d.replace("+", "") })} />
+                <CountrySelect value={`+${form.countryCode}`} iso={form.countryIso} onChange={(d, c) => setForm({ ...form, countryCode: d.replace("+", ""), countryIso: c })} />
               </Field>
               <Field label="Address" required error={errFor('The address')}>
                 <input className="input" value={form.address} onChange={set('address')} placeholder="Street, city, postal code" maxLength={500} />

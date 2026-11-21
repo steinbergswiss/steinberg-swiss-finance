@@ -29,6 +29,7 @@ function upgradeState(parsed) {
     imfCode: u.imfCode || 'IMF-123456',
     swiftCode: u.swiftCode || 'SSFICHZZXXX',
     address: u.address || '',
+    countryIso: u.countryIso || 'CH',
   }));
   const collections = [
     'transactions',

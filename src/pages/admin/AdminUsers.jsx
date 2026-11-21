@@ -12,6 +12,7 @@ const EMPTY = {
   username: '',
   accountNumber: '',
   countryCode: '41',
+  countryIso: 'CH',
   phone: '',
   branchId: 1,
   status: 1,
@@ -69,6 +70,7 @@ export default function AdminUsers() {
             username: u.username,
             accountNumber: u.accountNumber,
             countryCode: u.countryCode,
+            countryIso: u.countryIso || '',
             phone: u.phone,
             branchId: u.branchId,
             status: u.status,
@@ -204,7 +206,7 @@ export default function AdminUsers() {
             </div>
             <div className="form-grid">
               <Field label="Country code">
-                <CountrySelect value={`+${form.countryCode}`} onChange={(d) => setForm({ ...form, countryCode: d.replace("+", "") })} />
+                <CountrySelect value={`+${form.countryCode}`} iso={form.countryIso} onChange={(d, c) => setForm({ ...form, countryCode: d.replace("+", ""), countryIso: c })} />
               </Field>
               <Field label="Phone">
                 <input className="input" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
