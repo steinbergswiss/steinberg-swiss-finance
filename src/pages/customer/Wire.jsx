@@ -28,19 +28,19 @@ export default function Wire() {
     null,
     {
       label: 'COT Code',
-      hint: 'Contact support to provide code'.
+      hint: 'Contact support to provide code.',
       expected: () => String(currentUser?.cotCode || '').trim(),
       placeholder: 'COT-123456',
     },
     {
       label: 'IMF Code',
-      hint: 'Contact support to provide code'.
+      hint: 'Contact support to provide code.',
       expected: () => String(currentUser?.imfCode || '').trim(),
       placeholder: 'IMF-123456',
     },
     {
       label: 'Swift Code',
-      hint: 'Contact support to provide code'.
+      hint: 'Contact support to provide code.',
       expected: () => String(form.swiftCode || '').trim(),
       placeholder: 'ABCDEF12XXX',
     },
