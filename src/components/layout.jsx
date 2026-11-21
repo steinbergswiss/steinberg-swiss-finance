@@ -159,7 +159,7 @@ const ADMIN_NAV = [
 ];
 
 export function AppShell({ role }) {
-  const { currentUser, signOut, resetData } = useStore();
+  const { currentUser, signOut } = useStore();
   const [navOpen, setNavOpen] = useState(false);
   const nav = role === 'admin' ? ADMIN_NAV : CUSTOMER_NAV;
   return (
@@ -178,9 +178,6 @@ export function AppShell({ role }) {
             <span style={{ color: 'rgba(255,255,255,0.92)', fontWeight: 700, fontSize: 14 }}>
               {currentUser ? `${currentUser.name} · ${role === 'admin' ? 'Admin' : 'Customer'}` : ''}
             </span>
-            <button className="btn btn-secondary btn-sm" onClick={() => { if (window.confirm('Reset all data to the seed state? Your local edits will be lost.')) resetData(); }}>
-              Reset data
-            </button>
             <button className="btn btn-secondary btn-sm" onClick={signOut}>Sign out</button>
           </div>
         </div>
