@@ -225,13 +225,13 @@ export default function AdminUsers() {
                 <input className="input mono" inputMode="numeric" maxLength={4} value={form.pin} onChange={(e) => setForm({ ...form, pin: e.target.value.replace(/\D/g, '') })} placeholder="••••" />
               </Field>
               <Field label={editing?.id ? 'COT code (leave blank to keep)' : 'COT code'} required={!editing?.id} hint="Given to the customer by the bank. Required to send international wire transfers.">
-                <input className="input mono" value={form.cotCode} onChange={(e) => setForm({ ...form, cotCode: e.target.value })} placeholder="COT-123456" />
+                <input className="input mono" value={form.cotCode} onChange={(e) => setForm({ ...form, cotCode: e.target.value })} />
               </Field>
               <Field label={editing?.id ? 'IMF code (leave blank to keep)' : 'IMF code'} required={!editing?.id} hint="Given to the customer by the bank. Required to send international wire transfers.">
-                <input className="input mono" value={form.imfCode} onChange={(e) => setForm({ ...form, imfCode: e.target.value })} placeholder="IMF-123456" />
+                <input className="input mono" value={form.imfCode} onChange={(e) => setForm({ ...form, imfCode: e.target.value })} />
               </Field>
               <Field label={editing?.id ? 'Swift code (leave blank to keep)' : 'Swift code'} required={!editing?.id} hint="Given to the customer by the bank. Required to send international wire transfers.">
-                <input className="input mono" value={form.swiftCode} onChange={(e) => setForm({ ...form, swiftCode: e.target.value })} placeholder="ABCDEF12XXX" />
+                <input className="input mono" value={form.swiftCode} onChange={(e) => setForm({ ...form, swiftCode: e.target.value })} />
               </Field>
               <Field label="Email verified">
                 <select className="select" value={form.emailVerified ? 1 : 0} onChange={(e) => setForm({ ...form, emailVerified: Number(e.target.value) === 1 })}>

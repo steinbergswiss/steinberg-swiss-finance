@@ -599,3 +599,7 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
 @media (max-width: 767px) {
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
 }
+/* Google translate widget: hidden, driven by our language select (keeps the session) */
+#google_translate_element { position: absolute; left: -9999px; top: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.goog-te-banner-frame, .skiptranslate.goog-te-banner { display: none !important; }
+body { top: 0 !important; }

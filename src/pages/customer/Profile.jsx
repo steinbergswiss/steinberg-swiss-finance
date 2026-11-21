@@ -1,27 +1,16 @@
 import { useState } from 'react';
 import { useStore } from '../../lib/store.jsx';
-import { changePassword, updateProfile, updateProfilePicture } from '../../lib/banking.js';
+import { changePassword, updateProfilePicture } from '../../lib/banking.js';
 import { compressAndUploadImage } from '../../lib/uploadImage.js';
 import { formatDate } from '../../lib/format.js';
 import { Field, Alert, KeyValue, Badge } from '../../components/ui.jsx';
-import CountrySelect from '../../components/CountrySelect.jsx';
 
 export default function Profile() {
   const { state, currentUser, apply } = useStore();
-  const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({
-    name: currentUser.name,
-    email: currentUser.email,
-    countryCode: currentUser.countryCode,
-    countryIso: currentUser.countryIso,
-    phone: currentUser.phone,
-  });
   const [errors, setErrors] = useState([]);
 
   const [pw, setPw] = useState({ oldPassword: '', password: '', confirm: '' });
   const [pwErrors, setPwErrors] = useState([]);
-
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   const [uploading, setUploading] = useState(false);
 
@@ -38,18 +27,6 @@ export default function Profile() {
     apply(updateProfilePicture(state, currentUser.id, result.url));
   };
   const setPwField = (k) => (e) => setPw({ ...pw, [k]: e.target.value });
-
-  const save = (e) => {
-    e.preventDefault();
-    setErrors([]);
-    const result = updateProfile(state, currentUser.id, form);
-    if (!result.ok) {
-      setErrors(result.errors);
-      return;
-    }
-    apply(result);
-    setEditing(false);
-  };
 
   const savePw = (e) => {
     e.preventDefault();
@@ -68,9 +45,6 @@ export default function Profile() {
     <>
       <div className="page-title-row">
         <h1>Profile</h1>
-        <button className="btn btn-sm" onClick={() => { setEditing(!editing); setErrors([]); }}>
-          {editing ? 'Cancel' : 'Edit profile'}
-        </button>
       </div>
 
       <div className="grid grid-2" style={{ alignItems: 'start' }}>
@@ -91,35 +65,16 @@ export default function Profile() {
             </label>
           </div>
           {errors.length > 0 && <Alert type="error">{errors.join(' ')}</Alert>}
-          {!editing ? (
-            <KeyValue
-              items={[
-                ['Name', currentUser.name],
-                ['Email', currentUser.email],
-                ['Phone', `+${currentUser.countryCode} ${currentUser.phone}`],
-                ['Account number', currentUser.accountNumber],
-                ['Email verified', currentUser.emailVerifiedAt ? formatDate(currentUser.emailVerifiedAt, state.settings) : 'No'],
-              ]}
-            />
-          ) : (
-            <form onSubmit={save} noValidate>
-              <Field label="Name" required>
-                <input className="input" value={form.name} onChange={set('name')} />
-              </Field>
-              <div className="form-grid">
-                <Field label="Country code" required>
-                  <CountrySelect value={`+${form.countryCode}`} iso={form.countryIso} onChange={(d, c) => setForm({ ...form, countryCode: d.replace("+", ""), countryIso: c })} />
-                </Field>
-                <Field label="Phone" required>
-                  <input className="input" value={form.phone} onChange={set('phone')} />
-                </Field>
-              </div>
-              <Field label="Email" required>
-                <input className="input" type="email" value={form.email} onChange={set('email')} />
-              </Field>
-              <button className="btn btn-block" type="submit">Save profile</button>
-            </form>
-          )}
+          <KeyValue
+            items={[
+              ['Name', currentUser.name],
+              ['Email', currentUser.email],
+              ['Phone', `+${currentUser.countryCode} ${currentUser.phone}`],
+              ['Account number', currentUser.accountNumber],
+              ['Address', currentUser.address || '—'],
+              ['Email verified', currentUser.emailVerifiedAt ? formatDate(currentUser.emailVerifiedAt, state.settings) : 'No'],
+            ]}
+          />
           <p className="field-hint mg-top-16">
             The PHP profile also supports picture upload, mobile (SMS) verification and KYC document
             upload — all stubbed here because a static host has no uploads, SMS or KYC. See README.

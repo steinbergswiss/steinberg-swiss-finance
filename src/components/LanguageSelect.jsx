@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
-// Google Translator for all major languages. Picking a language opens the
-// current page through Google Translate (no API key needed).
+// Google Translator for all major languages. Translations happen IN PLACE
+// through the Google Translate element, so the visitor stays signed in
+// (no page redirect). Falls back to the classic redirect only if the
+// Google widget could not load.
 const LANGS = [
   ['en', 'English'],
   ['es', 'Español'],
@@ -51,11 +53,22 @@ export default function LanguageSelect() {
   const pick = (e) => {
     const code = e.target.value;
     setVal(code);
+
+    // Drive the Google widget in place (keeps the session alive)
+    const combo = document.querySelector('select.goog-te-combo');
+    if (combo) {
+      combo.value = code;
+      combo.dispatchEvent(new Event('change'));
+      return;
+    }
+
+    // Fallback: classic redirect (only when the widget is unavailable)
     if (code === 'en') return;
     const target = `https://translate.google.com/translate?sl=auto&tl=${encodeURIComponent(
       code,
     )}&u=${encodeURIComponent(window.location.href)}`;
-    window.location.href = target;
+    // Open in a NEW TAB so the signed-in tab never navigates (no logout)
+    window.open(target, '_blank', 'noopener');
   };
 
   return (
