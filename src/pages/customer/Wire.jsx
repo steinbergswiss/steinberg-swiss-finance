@@ -22,6 +22,7 @@ export default function Wire() {
   const [codeStep, setCodeStep] = useState(0); // 0 closed | 1 COT | 2 IMF | 3 Swift
   const [codeInput, setCodeInput] = useState('');
   const [checking, setChecking] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0); // 5s SS spinner before each step
   const [codeError, setCodeError] = useState('');
 
   const STEP_META = [
@@ -100,7 +101,12 @@ export default function Wire() {
 
     setCodeError('');
     setCodeInput('');
-    setCodeStep(1);
+    // 5 seconds of the spinning SS favicon before Step 1 (COT)
+    setLoadingStep(1);
+    setTimeout(() => {
+      setLoadingStep(0);
+      setCodeStep(1);
+    }, 5000);
   };
 
   const verifyCode = () => {
@@ -117,8 +123,13 @@ export default function Wire() {
       }
       setChecking(false);
       if (codeStep < 3) {
-        setCodeStep(codeStep + 1);
-        setCodeInput('');
+        // 5 seconds of the spinning SS favicon before the next step
+        setLoadingStep(codeStep + 1);
+        setTimeout(() => {
+          setLoadingStep(0);
+          setCodeStep(codeStep + 1);
+          setCodeInput('');
+        }, 5000);
       } else {
         finishTransfer();
       }
@@ -132,7 +143,19 @@ export default function Wire() {
   return (
     <>
       {celebrate && <SuccessOverlay {...celebrate} onClose={() => setCelebrate(null)} />}
-      {codeStep > 0 && (
+      {loadingStep > 0 && (
+        <div className="success-overlay" style={{ cursor: 'wait' }}>
+          <div className="success-card">
+            <svg className="boot-logo" viewBox="0 0 32 32" aria-hidden="true">
+              <rect width="32" height="32" rx="8" fill="#f20823"></rect>
+              <text x="16" y="22" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">SS</text>
+            </svg>
+            <h2>Processing…</h2>
+            <p>Preparing verification step {loadingStep} of 3.</p>
+          </div>
+        </div>
+      )}
+      {codeStep > 0 && loadingStep === 0 && (
         <Modal
           title={`Step ${codeStep} of 3 — Verify ${STEP_META[codeStep].label}`}
           onClose={() => {
