@@ -4,9 +4,10 @@ import { useStore } from '../../lib/store.jsx';
 import { randomAccountNumber, registerCustomer, validateRegistration } from '../../lib/banking.js';
 import { getSetting, groupAccountNumber } from '../../lib/format.js';
 import { Field, Alert } from '../../components/ui.jsx';
+import { compressAndUploadImage } from '../../lib/uploadImage.js';
 import CountrySelect from '../../components/CountrySelect.jsx';
 
-const EMPTY = { name: '', email: '', countryCode: '41', phone: '', password: '', confirm: '', agree: false };
+const EMPTY = { name: '', email: '', countryCode: '41', phone: '', password: '', confirm: '', pin: '', profilePicture: '', agree: false };
 
 export default function Register() {
   const { state, apply, signInAs, notify } = useStore();
@@ -15,6 +16,20 @@ export default function Register() {
   const previewAccountNumber = useMemo(() => randomAccountNumber(state), []);
   const [form, setForm] = useState({ ...EMPTY, accountNumber: previewAccountNumber });
   const [errors, setErrors] = useState([]);
+  const [uploading, setUploading] = useState(false);
+
+  const onPicture = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const result = await compressAndUploadImage(file);
+    setUploading(false);
+    if (!result.ok) {
+      setErrors([result.error]);
+      return;
+    }
+    setForm({ ...form, profilePicture: result.url });
+  };
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value });
 
@@ -71,6 +86,22 @@ export default function Register() {
             <Field label="Your account number" hint="Auto-generated for you — no spaces.">
               <input className="input mono text-bold" value={form.accountNumber} readOnly />
             </Field>
+            <Field label="Profile picture (optional)">
+              <div className="flex items-center gap-12">
+                {form.profilePicture ? (
+                  <img src={form.profilePicture} alt="" style={{ width: 72, height: 72, borderRadius: 999, objectFit: 'cover', border: '2px solid var(--line)' }} />
+                ) : (
+                  <div className="avatar-placeholder" style={{ width: 72, height: 72, fontSize: 26 }}>{form.name ? form.name.charAt(0).toUpperCase() : '?'}</div>
+                )}
+                <label className="btn btn-ghost btn-sm" style={{ cursor: 'pointer' }}>
+                  {uploading ? 'Uploading…' : form.profilePicture ? 'Change picture' : 'Upload picture'}
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={onPicture} disabled={uploading} />
+                </label>
+                {form.profilePicture && (
+                  <button type="button" className="btn-link" onClick={() => setForm({ ...form, profilePicture: '' })}>Remove</button>
+                )}
+              </div>
+            </Field>
             <Field label="Name" required error={errFor('The name')}>
               <input className="input" value={form.name} onChange={set('name')} placeholder="Emma Keller" maxLength={191} />
             </Field>
@@ -91,6 +122,9 @@ export default function Register() {
               </Field>
               <Field label="Confirm password" required error={errFor('The password confirmation')}>
                 <input className="input" type="password" value={form.confirm} onChange={set('confirm')} placeholder="Repeat password" />
+              </Field>
+              <Field label="4-digit passcode" required error={errFor('The passcode')} hint="You will enter this after your password every time you sign in.">
+                <input className="input mono" inputMode="numeric" maxLength={4} value={form.pin} onChange={(e) => setForm({ ...form, pin: e.target.value.replace(/\D/g, '') })} placeholder="••••" />
               </Field>
             </div>
             <label className="checkbox-row mg-bottom-16">

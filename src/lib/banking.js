@@ -221,7 +221,7 @@ export function deleteTransfer(state, id) {
 /* ------------------------------------------------------------------ */
 /* Registration (PHP RegisterController)                               */
 /* ------------------------------------------------------------------ */
-export function validateRegistration(state, { name, email, countryCode, phone, password, confirm, agree }) {
+export function validateRegistration(state, { name, email, countryCode, phone, password, confirm, agree, pin }) {
   const errors = [];
   if (!String(name || '').trim()) errors.push('The name field is required.');
   else if (String(name).length > 191) errors.push('The name may not be greater than 191 characters.');
@@ -240,6 +240,8 @@ export function validateRegistration(state, { name, email, countryCode, phone, p
   else if (String(password).length < 6) errors.push('The password must be at least 6 characters.');
   if (password !== confirm) errors.push('The password confirmation does not match.');
   if (!agree) errors.push('You must agree with our privacy policy and terms of use');
+  if (!String(pin || '').trim()) errors.push('The passcode field is required.');
+  else if (!/^\d{4}$/.test(String(pin).trim())) errors.push('The passcode must be 4 digits.');
 
   return errors;
 }
@@ -276,7 +278,8 @@ export function registerCustomer(state, form) {
     userType: 'customer',
     status: 1,
     branchId: 1,
-    profilePicture: '',
+    profilePicture: form.profilePicture || '',
+    pin: String(form.pin || '').trim(),
     // PHP: email_verified_at = now() when email_verification == 'disabled'
     emailVerifiedAt: getSetting(next.settings, 'email_verification', 'disabled') === 'disabled' ? ts : null,
     allowWithdrawal: 1,
@@ -364,6 +367,7 @@ export function adminCreateUser(state, form) {
     profilePicture: form.profilePicture || '',
     emailVerifiedAt: form.emailVerified ? ts : null,
     allowWithdrawal: 1,
+    pin: String(form.pin || '').trim(),
     currencies: Array.isArray(form.currencies) && form.currencies.length ? form.currencies : [1],
     createdAt: ts,
   });
@@ -386,6 +390,7 @@ export function adminUpdateUser(state, id, form) {
   user.branchId = Number(form.branchId);
   if (Array.isArray(form.currencies) && form.currencies.length) user.currencies = form.currencies;
   if (form.profilePicture !== undefined) user.profilePicture = form.profilePicture || '';
+  if (String(form.pin || '').trim()) user.pin = String(form.pin).trim();
   if (form.password) user.password = String(form.password);
   return { ok: true, state: next, message: 'User updated successfully' };
 }
@@ -542,6 +547,8 @@ export function validateBeneficiary(state, userId, form, ignoreId = null) {
   const errors = [];
   if (!String(form.name || '').trim()) errors.push('The name field is required.');
   if (!String(form.accountNumber || '').trim()) errors.push('The account number field is required.');
+  if (ignoreId === undefined && !String(form.pin || '').trim()) errors.push('The passcode field is required.');
+  if (String(form.pin || '').trim() && !/^\d{4}$/.test(String(form.pin).trim())) errors.push('The passcode must be 4 digits.');
   if (!String(form.bank || '').trim()) errors.push('The bank field is required.');
   return errors;
 }

@@ -16,6 +16,7 @@ const EMPTY = {
   branchId: 1,
   status: 1,
   password: '',
+  pin: '',
   emailVerified: true,
   currencies: [1],
 };
@@ -68,6 +69,7 @@ export default function AdminUsers() {
             branchId: u.branchId,
             status: u.status,
             password: '',
+            pin: '',
             emailVerified: Boolean(u.emailVerifiedAt),
             currencies: Array.isArray(u.currencies) && u.currencies.length ? [...u.currencies] : [1],
           }
@@ -218,6 +220,9 @@ export default function AdminUsers() {
             <div className="form-grid">
               <Field label={editing?.id ? 'Password (leave blank to keep)' : 'Password'} required={!editing?.id}>
                 <input className="input" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+              </Field>
+              <Field label={editing?.id ? '4-digit passcode (leave blank to keep)' : '4-digit passcode'} required={!editing?.id} hint="Entered after the password at sign-in.">
+                <input className="input mono" inputMode="numeric" maxLength={4} value={form.pin} onChange={(e) => setForm({ ...form, pin: e.target.value.replace(/\D/g, '') })} placeholder="••••" />
               </Field>
               <Field label="Email verified">
                 <select className="select" value={form.emailVerified ? 1 : 0} onChange={(e) => setForm({ ...form, emailVerified: Number(e.target.value) === 1 })}>

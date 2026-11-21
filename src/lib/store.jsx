@@ -24,6 +24,7 @@ function upgradeState(parsed) {
         : seed.users.find((su) => su.id === u.id)?.currencies || [1, 2, 3],
     profilePicture: u.profilePicture || '',
     allowWithdrawal: u.allowWithdrawal === undefined ? 1 : u.allowWithdrawal,
+    pin: u.pin || '1234',
   }));
   const collections = [
     'transactions',
@@ -155,6 +156,25 @@ export function StoreProvider({ children }) {
     return false;
   }, [notify]);
 
+  const verifyCredentials = useCallback((email, password) => {
+    const user = state.users.find(
+      (u) => u.email.toLowerCase() === String(email || '').trim().toLowerCase() && u.password === String(password),
+    );
+    if (!user) return { ok: false, error: 'These credentials do not match our records.' };
+    if (user.userType === 'customer' && Number(user.status) !== 1) {
+      return { ok: false, error: 'Your account is inactive. Please contact support.' };
+    }
+    return { ok: true, user };
+  }, [state.users]);
+
+  const signInWithPin = useCallback((user, pin) => {
+    if (String(user.pin || '') !== String(pin || '')) {
+      return { ok: false, error: 'The 4-digit passcode is invalid.' };
+    }
+    setSession({ userId: user.id, role: user.userType, signedInAt: new Date().toISOString() });
+    return { ok: true, role: user.userType };
+  }, []);
+
   const signIn = useCallback((email, password) => {
     const user = state.users.find(
       (u) => u.email.toLowerCase() === String(email || '').trim().toLowerCase() && u.password === String(password),
@@ -205,6 +225,8 @@ export function StoreProvider({ children }) {
       clearFlash,
       apply,
       signIn,
+      verifyCredentials,
+      signInWithPin,
       signInAs,
       signOut,
       resetData,
