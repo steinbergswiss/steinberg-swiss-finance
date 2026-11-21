@@ -259,8 +259,8 @@ export function registerCustomer(state, form) {
   if (errors.length) return { ok: false, errors, state };
   const next = clone(state);
 
-  // Random 10-digit account number, no spacing
-  const accountNumber = randomAccountNumber(next);
+  // Random 10-digit account number, no spacing (use the form preview when provided)
+  const accountNumber = String(form.accountNumber || '').trim() || randomAccountNumber(next);
 
   const id = next.counter.user++;
   const ts = nowIso();

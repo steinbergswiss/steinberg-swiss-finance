@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store.jsx';
-import { registerCustomer, validateRegistration } from '../../lib/banking.js';
+import { randomAccountNumber, registerCustomer, validateRegistration } from '../../lib/banking.js';
 import { getSetting, groupAccountNumber } from '../../lib/format.js';
 import { Field, Alert } from '../../components/ui.jsx';
 import CountrySelect from '../../components/CountrySelect.jsx';
@@ -11,7 +11,9 @@ const EMPTY = { name: '', email: '', countryCode: '41', phone: '', password: '',
 export default function Register() {
   const { state, apply, signInAs, notify } = useStore();
   const navigate = useNavigate();
-  const [form, setForm] = useState(EMPTY);
+  // Auto-generated 10-digit account number shown on the form
+  const previewAccountNumber = useMemo(() => randomAccountNumber(state), []);
+  const [form, setForm] = useState({ ...EMPTY, accountNumber: previewAccountNumber });
   const [errors, setErrors] = useState([]);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value });
@@ -66,6 +68,9 @@ export default function Register() {
             <Alert type="error">{errors.filter((x) => !['The name', 'The email', 'The country', 'The phone', 'The password', 'You must agree'].some((p) => x.startsWith(p))).join(' ')}</Alert>
           )}
           <form onSubmit={submit} noValidate>
+            <Field label="Your account number" hint="Auto-generated for you — no spaces.">
+              <input className="input mono text-bold" value={form.accountNumber} readOnly />
+            </Field>
             <Field label="Name" required error={errFor('The name')}>
               <input className="input" value={form.name} onChange={set('name')} placeholder="Emma Keller" maxLength={191} />
             </Field>
