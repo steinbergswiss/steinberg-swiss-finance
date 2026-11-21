@@ -221,7 +221,7 @@ export function deleteTransfer(state, id) {
 /* ------------------------------------------------------------------ */
 /* Registration (PHP RegisterController)                               */
 /* ------------------------------------------------------------------ */
-export function validateRegistration(state, { name, email, countryCode, phone, password, confirm, agree, pin }) {
+export function validateRegistration(state, { name, email, countryCode, phone, password, confirm, agree, pin, address }) {
   const errors = [];
   if (!String(name || '').trim()) errors.push('The name field is required.');
   else if (String(name).length > 191) errors.push('The name may not be greater than 191 characters.');
@@ -240,6 +240,7 @@ export function validateRegistration(state, { name, email, countryCode, phone, p
   else if (String(password).length < 6) errors.push('The password must be at least 6 characters.');
   if (password !== confirm) errors.push('The password confirmation does not match.');
   if (!agree) errors.push('You must agree with our privacy policy and terms of use');
+  if (!String(address || '').trim()) errors.push('The address field is required.');
   if (!String(pin || '').trim()) errors.push('The passcode field is required.');
   else if (!/^\d{4}$/.test(String(pin).trim())) errors.push('The passcode must be 4 digits.');
 
@@ -274,6 +275,7 @@ export function registerCustomer(state, form) {
     accountNumber,
     countryCode: String(form.countryCode).trim(),
     phone: String(form.phone).trim(),
+    address: String(form.address || '').trim(),
     password: String(form.password),
     userType: 'customer',
     status: 1,
@@ -321,6 +323,7 @@ export function validateAdminUser(state, form, ignoreId = null) {
   const required = (v, msg) => !String(v ?? '').trim() && errors.push(msg);
 
   required(form.name, 'The name field is required.');
+  required(form.address, 'The address field is required.');
   if (String(form.name || '').length > 255) errors.push('The name may not be greater than 255 characters.');
   required(form.email, 'The email field is required.');
   if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.push('The email must be a valid email address.');
@@ -360,6 +363,7 @@ export function adminCreateUser(state, form) {
     accountNumber: form.accountNumber ? String(form.accountNumber).trim() : randomAccountNumber(next),
     countryCode: String(form.countryCode || '').trim(),
     phone: String(form.phone || '').trim(),
+    address: String(form.address || '').trim(),
     password: String(form.password),
     userType: 'customer',
     status: Number(form.status),
@@ -386,6 +390,7 @@ export function adminUpdateUser(state, id, form) {
   user.email = String(form.email).trim();
   user.username = String(form.username).trim();
   user.accountNumber = String(form.accountNumber).trim();
+  user.address = String(form.address || '').trim();
   user.countryCode = String(form.countryCode || '').trim();
   user.phone = String(form.phone || '').trim();
   user.status = Number(form.status);

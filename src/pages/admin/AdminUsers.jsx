@@ -17,6 +17,7 @@ const EMPTY = {
   status: 1,
   password: '',
   pin: '',
+  address: '',
   cotCode: '',
   imfCode: '',
   emailVerified: true,
@@ -72,6 +73,7 @@ export default function AdminUsers() {
             status: u.status,
             password: '',
             pin: '',
+            address: u.address || '',
             cotCode: u.cotCode || '',
             imfCode: u.imfCode || '',
             emailVerified: Boolean(u.emailVerifiedAt),
@@ -207,12 +209,8 @@ export default function AdminUsers() {
               </Field>
             </div>
             <div className="form-grid">
-              <Field label="Branch" required>
-                <select className="select" value={form.branchId} onChange={(e) => setForm({ ...form, branchId: Number(e.target.value) })}>
-                  {state.branches.map((b) => (
-                    <option key={b.id} value={b.id}>{b.name}</option>
-                  ))}
-                </select>
+              <Field label="Address" required>
+                <input className="input" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Street, city, postal code" maxLength={500} />
               </Field>
               <Field label="Status" required>
                 <select className="select" value={form.status} onChange={(e) => setForm({ ...form, status: Number(e.target.value) })}>
