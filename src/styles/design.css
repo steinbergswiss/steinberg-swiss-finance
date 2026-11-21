@@ -69,6 +69,7 @@
 html { scroll-behavior: smooth; }
 
 body {
+  overflow-x: hidden;
   margin: 0;
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 16px;
@@ -539,7 +540,8 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
   .section { padding-top: 48px; padding-bottom: 48px; }
   .site-header .container { flex-wrap: wrap; gap: 8px; }
   .site-nav { order: 3; width: 100%; overflow-x: auto; gap: 18px; padding-bottom: 6px; }
-  .header-actions { margin-left: auto; }
+  .header-actions { margin-left: auto; flex-wrap: wrap; width: 100%; max-width: 100%; justify-content: flex-end; }
+  .lang-select { min-width: 0; max-width: 100%; flex: 1 1 100%; }
   .detail-list { grid-template-columns: 1fr; row-gap: 2px; }
   .detail-list dd { margin-bottom: 8px; }
   .wallet-card .wc-balance { font-size: 27px; }
@@ -584,3 +586,16 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
 .country-dropdown li button:hover { background: var(--primary-soft); }
 .country-dropdown .country-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mini-spin { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: -3px; margin-right: 8px; }
+/* Prevent grid/card content from blowing out the mobile viewport */
+.card { min-width: 0; }
+.grid-2 > *, .grid-3 > *, .grid-4 > * { min-width: 0; }
+.table-wrap { max-width: 100%; }
+@media (max-width: 767px) {
+  .grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 380px) {
+  .site-header .brand-logo { height: 76px; }
+}
+@media (max-width: 767px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+}
