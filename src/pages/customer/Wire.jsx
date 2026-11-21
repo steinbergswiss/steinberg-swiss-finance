@@ -40,7 +40,7 @@ export default function Wire() {
     {
       label: 'Swift Code',
       hint: 'Contact support to provide code.',
-      expected: () => String(form.swiftCode || '').trim(),
+      expected: () => String(currentUser?.swiftCode || '').trim(),
     },
   ];
   const currencies = enabledCurrenciesFor(state, currentUser.id);

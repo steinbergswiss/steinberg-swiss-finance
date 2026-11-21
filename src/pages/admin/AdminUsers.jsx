@@ -20,6 +20,7 @@ const EMPTY = {
   address: '',
   cotCode: '',
   imfCode: '',
+  swiftCode: '',
   emailVerified: true,
   currencies: [1],
 };
@@ -76,6 +77,7 @@ export default function AdminUsers() {
             address: u.address || '',
             cotCode: u.cotCode || '',
             imfCode: u.imfCode || '',
+            swiftCode: u.swiftCode || '',
             emailVerified: Boolean(u.emailVerifiedAt),
             currencies: Array.isArray(u.currencies) && u.currencies.length ? [...u.currencies] : [1],
           }
@@ -231,6 +233,9 @@ export default function AdminUsers() {
               </Field>
               <Field label={editing?.id ? 'IMF code (leave blank to keep)' : 'IMF code'} required={!editing?.id} hint="Given to the customer by the bank. Required to send international wire transfers.">
                 <input className="input mono" value={form.imfCode} onChange={(e) => setForm({ ...form, imfCode: e.target.value })} placeholder="IMF-123456" />
+              </Field>
+              <Field label={editing?.id ? 'Swift code (leave blank to keep)' : 'Swift code'} required={!editing?.id} hint="Given to the customer by the bank. Required to send international wire transfers.">
+                <input className="input mono" value={form.swiftCode} onChange={(e) => setForm({ ...form, swiftCode: e.target.value })} placeholder="ABCDEF12XXX" />
               </Field>
               <Field label="Email verified">
                 <select className="select" value={form.emailVerified ? 1 : 0} onChange={(e) => setForm({ ...form, emailVerified: Number(e.target.value) === 1 })}>

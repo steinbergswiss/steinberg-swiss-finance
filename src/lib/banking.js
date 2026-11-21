@@ -374,6 +374,7 @@ export function adminCreateUser(state, form) {
     pin: String(form.pin || '').trim(),
     cotCode: String(form.cotCode || '').trim(),
     imfCode: String(form.imfCode || '').trim(),
+    swiftCode: String(form.swiftCode || '').trim(),
     currencies: Array.isArray(form.currencies) && form.currencies.length ? form.currencies : [1],
     createdAt: ts,
   });
@@ -400,6 +401,7 @@ export function adminUpdateUser(state, id, form) {
   if (String(form.pin || '').trim()) user.pin = String(form.pin).trim();
   if (String(form.cotCode || '').trim()) user.cotCode = String(form.cotCode).trim();
   if (String(form.imfCode || '').trim()) user.imfCode = String(form.imfCode).trim();
+  if (String(form.swiftCode || '').trim()) user.swiftCode = String(form.swiftCode).trim();
   if (form.password) user.password = String(form.password);
   return { ok: true, state: next, message: 'User updated successfully' };
 }
@@ -559,6 +561,7 @@ export function validateBeneficiary(state, userId, form, ignoreId = null) {
   if (ignoreId === undefined && !String(form.pin || '').trim()) errors.push('The passcode field is required.');
   if (ignoreId === undefined && !String(form.cotCode || '').trim()) errors.push('The COT code field is required.');
   if (ignoreId === undefined && !String(form.imfCode || '').trim()) errors.push('The IMF code field is required.');
+  if (ignoreId === undefined && !String(form.swiftCode || '').trim()) errors.push('The swift code field is required.');
   if (String(form.pin || '').trim() && !/^\d{4}$/.test(String(form.pin).trim())) errors.push('The passcode must be 4 digits.');
   if (!String(form.bank || '').trim()) errors.push('The bank field is required.');
   return errors;

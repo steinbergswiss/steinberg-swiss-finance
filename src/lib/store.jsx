@@ -27,6 +27,7 @@ function upgradeState(parsed) {
     pin: u.pin || '1234',
     cotCode: u.cotCode || 'COT-123456',
     imfCode: u.imfCode || 'IMF-123456',
+    swiftCode: u.swiftCode || 'SSFICHZZXXX',
     address: u.address || '',
   }));
   const collections = [
