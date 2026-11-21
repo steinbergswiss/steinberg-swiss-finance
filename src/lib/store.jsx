@@ -25,6 +25,8 @@ function upgradeState(parsed) {
     profilePicture: u.profilePicture || '',
     allowWithdrawal: u.allowWithdrawal === undefined ? 1 : u.allowWithdrawal,
     pin: u.pin || '1234',
+    cotCode: u.cotCode || 'COT-123456',
+    imfCode: u.imfCode || 'IMF-123456',
   }));
   const collections = [
     'transactions',

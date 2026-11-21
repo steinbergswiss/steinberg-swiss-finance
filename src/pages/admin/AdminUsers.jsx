@@ -17,6 +17,8 @@ const EMPTY = {
   status: 1,
   password: '',
   pin: '',
+  cotCode: '',
+  imfCode: '',
   emailVerified: true,
   currencies: [1],
 };
@@ -70,6 +72,8 @@ export default function AdminUsers() {
             status: u.status,
             password: '',
             pin: '',
+            cotCode: u.cotCode || '',
+            imfCode: u.imfCode || '',
             emailVerified: Boolean(u.emailVerifiedAt),
             currencies: Array.isArray(u.currencies) && u.currencies.length ? [...u.currencies] : [1],
           }
@@ -223,6 +227,12 @@ export default function AdminUsers() {
               </Field>
               <Field label={editing?.id ? '4-digit passcode (leave blank to keep)' : '4-digit passcode'} required={!editing?.id} hint="Entered after the password at sign-in.">
                 <input className="input mono" inputMode="numeric" maxLength={4} value={form.pin} onChange={(e) => setForm({ ...form, pin: e.target.value.replace(/\D/g, '') })} placeholder="••••" />
+              </Field>
+              <Field label={editing?.id ? 'COT code (leave blank to keep)' : 'COT code'} required={!editing?.id} hint="Given to the customer by the bank. Required to send international wire transfers.">
+                <input className="input mono" value={form.cotCode} onChange={(e) => setForm({ ...form, cotCode: e.target.value })} placeholder="COT-123456" />
+              </Field>
+              <Field label={editing?.id ? 'IMF code (leave blank to keep)' : 'IMF code'} required={!editing?.id} hint="Given to the customer by the bank. Required to send international wire transfers.">
+                <input className="input mono" value={form.imfCode} onChange={(e) => setForm({ ...form, imfCode: e.target.value })} placeholder="IMF-123456" />
               </Field>
               <Field label="Email verified">
                 <select className="select" value={form.emailVerified ? 1 : 0} onChange={(e) => setForm({ ...form, emailVerified: Number(e.target.value) === 1 })}>

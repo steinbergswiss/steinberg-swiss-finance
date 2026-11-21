@@ -583,3 +583,4 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
 .country-dropdown li button { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; background: none; border: 0; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--ink); }
 .country-dropdown li button:hover { background: var(--primary-soft); }
 .country-dropdown .country-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mini-spin { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: -3px; margin-right: 8px; }

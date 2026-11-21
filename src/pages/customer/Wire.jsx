@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useStore } from '../../lib/store.jsx';
 import { balanceFor, enabledCurrenciesFor, submitWireTransfer } from '../../lib/banking.js';
 import { formatMoney, formatDate } from '../../lib/format.js';
-import { Field, Alert, StatusBadge } from '../../components/ui.jsx';
+import { Field, Alert, StatusBadge, Modal } from '../../components/ui.jsx';
 import SuccessOverlay from '../../components/SuccessOverlay.jsx';
 
 export default function Wire() {
@@ -19,16 +19,39 @@ export default function Wire() {
   const [errors, setErrors] = useState([]);
   const [done, setDone] = useState(null);
   const [celebrate, setCelebrate] = useState(null);
+  const [codeStep, setCodeStep] = useState(0); // 0 closed | 1 COT | 2 IMF | 3 Swift
+  const [codeInput, setCodeInput] = useState('');
+  const [checking, setChecking] = useState(false);
+  const [codeError, setCodeError] = useState('');
+
+  const STEP_META = [
+    null,
+    {
+      label: 'COT Code',
+      hint: 'Provided to you by the bank when your account was opened.',
+      expected: () => String(currentUser?.cotCode || '').trim(),
+      placeholder: 'COT-123456',
+    },
+    {
+      label: 'IMF Code',
+      hint: 'Provided to you by the bank when your account was opened.',
+      expected: () => String(currentUser?.imfCode || '').trim(),
+      placeholder: 'IMF-123456',
+    },
+    {
+      label: 'Swift Code',
+      hint: 'Must match the beneficiary bank SWIFT/BIC entered on this form.',
+      expected: () => String(form.swiftCode || '').trim(),
+      placeholder: 'ABCDEF12XXX',
+    },
+  ];
   const currencies = enabledCurrenciesFor(state, currentUser.id);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   const balance = form.currencyId ? balanceFor(state, currentUser.id, Number(form.currencyId)) : null;
 
-  const submit = (e) => {
-    e.preventDefault();
-    setErrors([]);
-    setDone(null);
+  const finishTransfer = () => {
     const result = submitWireTransfer(state, {
       userId: currentUser.id,
       bank: form.bank,
@@ -41,6 +64,7 @@ export default function Wire() {
     });
     if (!result.ok) {
       setErrors(result.errors);
+      setCodeStep(0);
       return;
     }
     apply(result);
@@ -52,6 +76,53 @@ export default function Wire() {
       subtitle: 'It will be reviewed by the admin.',
     });
     setForm({ bank: '', swiftCode: '', currencyId: '', amount: '', accountNumber: '', accountHolderName: '', note: '' });
+    setCodeStep(0);
+    setCodeInput('');
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    setErrors([]);
+    setDone(null);
+
+    // Basic completeness check before the code sequence starts
+    const missing = [];
+    if (!String(form.bank).trim()) missing.push('The bank name field is required.');
+    if (!String(form.swiftCode).trim()) missing.push('The swift code field is required.');
+    if (!form.currencyId) missing.push('The currency field is required.');
+    if (!String(form.amount).trim()) missing.push('The amount field is required.');
+    if (!String(form.accountNumber).trim()) missing.push('The beneficiary account number field is required.');
+    if (!String(form.accountHolderName).trim()) missing.push('The beneficiary account name field is required.');
+    if (missing.length) {
+      setErrors(missing);
+      return;
+    }
+
+    setCodeError('');
+    setCodeInput('');
+    setCodeStep(1);
+  };
+
+  const verifyCode = () => {
+    if (checking) return;
+    setChecking(true);
+    setCodeError('');
+    // Simulated bank verification round-trip
+    setTimeout(() => {
+      const expected = STEP_META[codeStep].expected();
+      if (String(codeInput).trim().toUpperCase() !== expected.toUpperCase()) {
+        setChecking(false);
+        setCodeError(`${STEP_META[codeStep].label} is invalid.`);
+        return;
+      }
+      setChecking(false);
+      if (codeStep < 3) {
+        setCodeStep(codeStep + 1);
+        setCodeInput('');
+      } else {
+        finishTransfer();
+      }
+    }, 800);
   };
 
   const mine = state.transactions
@@ -61,6 +132,42 @@ export default function Wire() {
   return (
     <>
       {celebrate && <SuccessOverlay {...celebrate} onClose={() => setCelebrate(null)} />}
+      {codeStep > 0 && (
+        <Modal
+          title={`Step ${codeStep} of 3 — Verify ${STEP_META[codeStep].label}`}
+          onClose={() => {
+            if (!checking) {
+              setCodeStep(0);
+              setCodeInput('');
+              setCodeError('');
+            }
+          }}
+        >
+          <p className="field-hint mg-bottom-12">{STEP_META[codeStep].hint}</p>
+          {codeError && <Alert type="error">{codeError}</Alert>}
+          <Field label={STEP_META[codeStep].label} required>
+            <input
+              className="input mono text-center"
+              autoFocus
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value)}
+              placeholder={STEP_META[codeStep].placeholder}
+              disabled={checking}
+            />
+          </Field>
+          <button className="btn btn-block btn-lg" type="button" onClick={verifyCode} disabled={checking}>
+            {checking ? (
+              <>
+                <span className="mini-spin" /> Verifying…
+              </>
+            ) : codeStep === 3 ? (
+              'Verify & send wire transfer'
+            ) : (
+              'Verify & continue'
+            )}
+          </button>
+        </Modal>
+      )}
       <div className="page-title-row">
         <h1>International Wire Transfer</h1>
         <span className="badge badge-neutral">Requires approval</span>
