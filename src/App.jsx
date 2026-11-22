@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { getCurrentLang, translateDom } from './lib/translate.js';
 import { AppShell, PublicLayout, RequireRole } from './components/layout.jsx';
 
 // Public
@@ -38,6 +40,14 @@ import AdminSettings from './pages/admin/AdminSettings.jsx';
 
 export default function App() {
   const location = useLocation();
+
+  // Keep the in-place translation applied after page changes
+  useEffect(() => {
+    if (getCurrentLang() === 'en') return undefined;
+    const t = setTimeout(() => translateDom(getCurrentLang()), 350);
+    return () => clearTimeout(t);
+  }, [location.pathname]);
+
   return (
     <div className="page-fade" key={location.pathname}>
     <Routes>

@@ -1,9 +1,7 @@
 import { useState } from 'react';
+import { translateDom, resetTranslation } from '../lib/translate.js';
 
-// Google Translator for all major languages. Translations happen IN PLACE
-// through the Google Translate element, so the visitor stays signed in
-// (no page redirect). Falls back to the classic redirect only if the
-// Google widget could not load.
+// In-place translator: never redirects, never opens tabs, never logs out.
 const LANGS = [
   ['en', 'English'],
   ['es', 'Español'],
@@ -53,22 +51,12 @@ export default function LanguageSelect() {
   const pick = (e) => {
     const code = e.target.value;
     setVal(code);
-
-    // Drive the Google widget in place (keeps the session alive)
-    const combo = document.querySelector('select.goog-te-combo');
-    if (combo) {
-      combo.value = code;
-      combo.dispatchEvent(new Event('change'));
+    if (code === 'en') {
+      resetTranslation();
       return;
     }
-
-    // Fallback: classic redirect (only when the widget is unavailable)
-    if (code === 'en') return;
-    const target = `https://translate.google.com/translate?sl=auto&tl=${encodeURIComponent(
-      code,
-    )}&u=${encodeURIComponent(window.location.href)}`;
-    // Open in a NEW TAB so the signed-in tab never navigates (no logout)
-    window.open(target, '_blank', 'noopener');
+    // Translate the current page in place. No popups, no new tabs.
+    translateDom(code);
   };
 
   return (
