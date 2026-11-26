@@ -72,13 +72,8 @@ export default function Profile() {
               ['Phone', `+${currentUser.countryCode} ${currentUser.phone}`],
               ['Account number', currentUser.accountNumber],
               ['Address', currentUser.address || '—'],
-              ['Email verified', currentUser.emailVerifiedAt ? formatDate(currentUser.emailVerifiedAt, state.settings) : 'No'],
             ]}
           />
-          <p className="field-hint mg-top-16">
-            The PHP profile also supports picture upload, mobile (SMS) verification and KYC document
-            upload — all stubbed here because a static host has no uploads, SMS or KYC. See README.
-          </p>
         </div>
 
         <div className="card">
@@ -96,10 +91,6 @@ export default function Profile() {
             </Field>
             <button className="btn btn-block" type="submit">Change password</button>
           </form>
-          <p className="field-hint mg-top-16">
-            Passwords are stored in the browser only. The PHP version hashes passwords with bcrypt —
-            a real port must do the same on a server.
-          </p>
         </div>
       </div>
     </>
