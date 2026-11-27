@@ -37,11 +37,6 @@ export default function Wire() {
       hint: 'Contact support to provide code.',
       expected: () => String(currentUser?.imfCode || '').trim(),
     },
-    {
-      label: 'Swift Code',
-      hint: 'Contact support to provide code.',
-      expected: () => String(currentUser?.swiftCode || '').trim(),
-    },
   ];
   const currencies = enabledCurrenciesFor(state, currentUser.id);
 
@@ -119,7 +114,7 @@ export default function Wire() {
         return;
       }
       setChecking(false);
-      if (codeStep < 3) {
+      if (codeStep < 2) {
         // 5 seconds of the spinning SS favicon before the next step
         setLoadingStep(codeStep + 1);
         setTimeout(() => {
@@ -177,7 +172,7 @@ export default function Wire() {
               <>
                 <span className="mini-spin" /> Verifying…
               </>
-            ) : codeStep === 3 ? (
+            ) : codeStep === 2 ? (
               'Verify & send wire transfer'
             ) : (
               'Verify & continue'

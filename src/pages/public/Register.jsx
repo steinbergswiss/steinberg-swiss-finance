@@ -7,7 +7,7 @@ import { Field, Alert } from '../../components/ui.jsx';
 import { compressAndUploadImage } from '../../lib/uploadImage.js';
 import CountrySelect from '../../components/CountrySelect.jsx';
 
-const EMPTY = { name: '', email: '', countryCode: '41', countryIso: 'CH', phone: '', address: '', password: '', confirm: '', pin: '', profilePicture: '', agree: false };
+const EMPTY = { name: '', email: '', countryCode: '41', countryIso: 'CH', phone: '', address: '', password: '', confirm: '', pin: '', profilePicture: '', currencies: [1], agree: false };
 
 export default function Register() {
   const { state, apply, signInAs, notify } = useStore();
@@ -85,6 +85,32 @@ export default function Register() {
           <form onSubmit={submit} noValidate>
             <Field label="Your account number" hint="Auto-generated for you — no spaces.">
               <input className="input mono text-bold" value={form.accountNumber} readOnly />
+            </Field>
+            <Field label="Currency accounts" required error={errFor('Please choose at least one')} hint="You can hold, send and receive in each selected currency.">
+              <div className="flex flex-wrap gap-8">
+                {state.currencies
+                  .filter((c) => c.status === 1)
+                  .map((c) => {
+                    const checked = (form.currencies || []).includes(c.id);
+                    return (
+                      <label key={c.id} className="checkbox-row" style={{ flex: '0 0 auto' }}>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() =>
+                            setForm({
+                              ...form,
+                              currencies: checked
+                                ? (form.currencies || []).filter((x) => x !== c.id)
+                                : [...(form.currencies || []), c.id],
+                            })
+                          }
+                        />
+                        <span>{c.name}</span>
+                      </label>
+                    );
+                  })}
+              </div>
             </Field>
             <Field label="Profile picture (optional)">
               <div className="flex items-center gap-12">

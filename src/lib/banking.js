@@ -221,7 +221,7 @@ export function deleteTransfer(state, id) {
 /* ------------------------------------------------------------------ */
 /* Registration (PHP RegisterController)                               */
 /* ------------------------------------------------------------------ */
-export function validateRegistration(state, { name, email, countryCode, phone, password, confirm, agree, pin, address }) {
+export function validateRegistration(state, { name, email, countryCode, phone, password, confirm, agree, pin, address, currencies }) {
   const errors = [];
   if (!String(name || '').trim()) errors.push('The name field is required.');
   else if (String(name).length > 191) errors.push('The name may not be greater than 191 characters.');
@@ -241,6 +241,7 @@ export function validateRegistration(state, { name, email, countryCode, phone, p
   if (password !== confirm) errors.push('The password confirmation does not match.');
   if (!agree) errors.push('You must agree with our privacy policy and terms of use');
   if (!String(address || '').trim()) errors.push('The address field is required.');
+  if (!Array.isArray(currencies) || !currencies.length) errors.push('Please choose at least one currency.');
   if (!String(pin || '').trim()) errors.push('The passcode field is required.');
   else if (!/^\d{4}$/.test(String(pin).trim())) errors.push('The passcode must be 4 digits.');
 
@@ -285,7 +286,7 @@ export function registerCustomer(state, form) {
     // PHP: email_verified_at = now() when email_verification == 'disabled'
     emailVerifiedAt: getSetting(next.settings, 'email_verification', 'disabled') === 'disabled' ? ts : null,
     allowWithdrawal: 1,
-    currencies: [1],
+    currencies: Array.isArray(form.currencies) && form.currencies.length ? form.currencies.map(Number) : [1],
     createdAt: ts,
   };
   next.users.push(user);
